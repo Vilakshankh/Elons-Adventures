@@ -44,10 +44,11 @@ void Scene_Menu::init()
     m_menuStrings.push_back("Quit");
 
     m_levelPaths.push_back("level1.txt");
-    m_levelPaths.push_back("level1.txt");
-    m_levelPaths.push_back("level1.txt");
-    m_levelPaths.push_back("level1.txt");
-    m_levelPaths.push_back("level1.txt");
+    m_levelPaths.push_back("rebind-keys");
+    m_levelPaths.push_back("game-volume");
+    m_levelPaths.push_back("level-editor");
+    m_levelPaths.push_back("reset-progress");
+    m_levelPaths.push_back("quit");
 
     m_menuText.setFont(m_game->assets().getFont("Megaman"));
     m_menuText.setCharacterSize(64);
@@ -81,8 +82,37 @@ void Scene_Menu::sDoAction(const Action &action)
         }
         else if (action.name() == "SELECT")
         {
-            m_game->changeScene("SELECT", std::make_shared<Scene_Zelda>(m_game, m_levelPaths[m_selectedMenuIndex]));
-            m_game->assets().getSound("MusicTitle").stop();
+            std::cout << "selected" << m_levelPaths[m_selectedMenuIndex] << "\n";
+
+            if (m_levelPaths[m_selectedMenuIndex] == "level1.txt")
+            {
+                m_game->changeScene("SELECT", std::make_shared<Scene_Zelda>(m_game, m_levelPaths[m_selectedMenuIndex]));
+                m_game->assets().getSound("MusicTitle").stop();
+            }
+            else if (m_levelPaths[m_selectedMenuIndex] == "rebind-keys")
+            {
+                std::cout << "Rebind Keys not deployed yet"
+                          << "\n";
+            }
+            else if (m_levelPaths[m_selectedMenuIndex] == "game-volume")
+            {
+                std::cout << "Game Volume not deployed yet"
+                          << "\n";
+            }
+            else if (m_levelPaths[m_selectedMenuIndex] == "level-editor")
+            {
+                std::cout << "Level Editor not deployed yet"
+                          << "\n";
+            }
+            else if (m_levelPaths[m_selectedMenuIndex] == "reset-progress")
+            {
+                std::cout << "Reset Progress not deployed yet"
+                          << "\n";
+            }
+            else if (m_levelPaths[m_selectedMenuIndex] == "quit")
+            {
+                onEnd();
+            }
         }
         else if (action.name() == "QUIT")
         {

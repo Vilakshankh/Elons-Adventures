@@ -14,7 +14,7 @@
 ///\/\/\\\\////\/\/\//\\//\\\/\/\/\/\/\\\\////\/\/\//\\//\\\/\/\
 
 #include "Scene_Menu.h"
-#include "Scene_Zelda.h"
+#include "Scene_EA.h"
 #include "Common.h"
 #include "Assets.h"
 #include "GameEngine.h"
@@ -86,7 +86,7 @@ void Scene_Menu::sDoAction(const Action &action)
 
             if (m_levelPaths[m_selectedMenuIndex] == "level1.txt")
             {
-                m_game->changeScene("SELECT", std::make_shared<Scene_Zelda>(m_game, m_levelPaths[m_selectedMenuIndex]));
+                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
                 m_game->assets().getSound("MusicTitle").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "rebind-keys")

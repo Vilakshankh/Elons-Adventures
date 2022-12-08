@@ -4,7 +4,7 @@
 //  Professor:       David Churchill
 //  Year / Term:     2022-09
 //  File Name:       GameEngine.cpp
-// 
+//
 //  Student Name:    Jason Lomond
 //  Student User:    jblomond
 //  Student Email:   jblomond@mun.ca
@@ -12,21 +12,21 @@
 //  Group Member(s): [enter student name(s)]
 //
 ///\/\/\\\\////\/\/\//\\//\\\/\/\/\/\/\\\\////\/\/\//\\//\\\/\/\
-                                
+
 #include "GameEngine.h"
 #include "Assets.h"
 #include "Scene_Menu.h"
 
-GameEngine::GameEngine(const std::string & path)
+GameEngine::GameEngine(const std::string &path)
 {
     init(path);
 }
 
-void GameEngine::init(const std::string & path)
+void GameEngine::init(const std::string &path)
 {
     m_assets.loadFromFile(path);
 
-    m_window.create(sf::VideoMode(1280, 768), "Definitely Not Zelda");
+    m_window.create(sf::VideoMode(1280, 768), "Elon's Adventure");
     m_window.setFramerateLimit(60);
 
     changeScene("MENU", std::make_shared<Scene_Menu>(this));
@@ -38,15 +38,15 @@ std::shared_ptr<Scene> GameEngine::currentScene()
 }
 
 bool GameEngine::isRunning()
-{ 
+{
     return m_running & m_window.isOpen();
 }
 
-sf::RenderWindow & GameEngine::window()
+sf::RenderWindow &GameEngine::window()
 {
     return m_window;
 }
-                                
+
 void GameEngine::run()
 {
     while (isRunning())
@@ -64,20 +64,22 @@ void GameEngine::sUserInput()
         {
             quit();
         }
-                                
+
         if (event.type == sf::Event::KeyPressed)
         {
         }
 
-
         if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased)
         {
             // if the current scene does not have an action associated with this key, skip the event
-            if (currentScene()->getActionMap().find(event.key.code) == currentScene()->getActionMap().end()) { continue; }
-           
+            if (currentScene()->getActionMap().find(event.key.code) == currentScene()->getActionMap().end())
+            {
+                continue;
+            }
+
             // determine start or end action by whether it was key pres or release
             const std::string actionType = (event.type == sf::Event::KeyPressed) ? "START" : "END";
-                        
+
             // look up the action and send the action to the scene
             currentScene()->doAction(Action(currentScene()->getActionMap().at(event.key.code), actionType));
         }
@@ -89,10 +91,23 @@ void GameEngine::sUserInput()
         {
             switch (event.mouseButton.button)
             {
-            case sf::Mouse::Left: { currentScene()->doAction(Action("LEFT_CLICK", "START", mpos)); break; }
-            case sf::Mouse::Middle: { currentScene()->doAction(Action("MIDDLE_CLICK", "START", mpos)); break; }
-            case sf::Mouse::Right: { currentScene()->doAction(Action("RIGHT_CLICK", "START", mpos)); break; }
-            default: break;
+            case sf::Mouse::Left:
+            {
+                currentScene()->doAction(Action("LEFT_CLICK", "START", mpos));
+                break;
+            }
+            case sf::Mouse::Middle:
+            {
+                currentScene()->doAction(Action("MIDDLE_CLICK", "START", mpos));
+                break;
+            }
+            case sf::Mouse::Right:
+            {
+                currentScene()->doAction(Action("RIGHT_CLICK", "START", mpos));
+                break;
+            }
+            default:
+                break;
             }
         }
 
@@ -100,10 +115,23 @@ void GameEngine::sUserInput()
         {
             switch (event.mouseButton.button)
             {
-            case sf::Mouse::Left: { currentScene()->doAction(Action("LEFT_CLICK", "END", mpos)); break; }
-            case sf::Mouse::Middle: { currentScene()->doAction(Action("MIDDLE_CLICK", "END", mpos)); break; }
-            case sf::Mouse::Right: { currentScene()->doAction(Action("RIGHT_CLICK", "END", mpos)); break; }
-            default: break;
+            case sf::Mouse::Left:
+            {
+                currentScene()->doAction(Action("LEFT_CLICK", "END", mpos));
+                break;
+            }
+            case sf::Mouse::Middle:
+            {
+                currentScene()->doAction(Action("MIDDLE_CLICK", "END", mpos));
+                break;
+            }
+            case sf::Mouse::Right:
+            {
+                currentScene()->doAction(Action("RIGHT_CLICK", "END", mpos));
+                break;
+            }
+            default:
+                break;
             }
         }
 
@@ -114,7 +142,7 @@ void GameEngine::sUserInput()
     }
 }
 
-void GameEngine::changeScene(const std::string& sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene)
+void GameEngine::changeScene(const std::string &sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene)
 {
     if (scene)
     {
@@ -128,7 +156,7 @@ void GameEngine::changeScene(const std::string& sceneName, std::shared_ptr<Scene
             return;
         }
     }
-                                
+
     if (endCurrentScene)
     {
         m_sceneMap.erase(m_sceneMap.find(m_currentScene));
@@ -139,10 +167,16 @@ void GameEngine::changeScene(const std::string& sceneName, std::shared_ptr<Scene
 
 void GameEngine::update()
 {
-    if (!isRunning()) { return; }
-    
-    if (m_sceneMap.empty()) { return; }
-    
+    if (!isRunning())
+    {
+        return;
+    }
+
+    if (m_sceneMap.empty())
+    {
+        return;
+    }
+
     sUserInput();
     currentScene()->simulate(m_simulationSpeed);
     currentScene()->sRender();
@@ -154,12 +188,12 @@ void GameEngine::quit()
     m_running = false;
 }
 
-Assets& GameEngine::assets()
+Assets &GameEngine::assets()
 {
     return m_assets;
 }
 
-void GameEngine::playSound(const std::string& soundName)
+void GameEngine::playSound(const std::string &soundName)
 {
     m_assets.getSound(soundName).play();
 }

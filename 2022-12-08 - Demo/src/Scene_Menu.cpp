@@ -131,7 +131,7 @@ void Scene_Menu::sRender()
     m_menuText.setCharacterSize(48);
     m_menuText.setString(m_title);
     m_menuText.setFillColor(sf::Color(204, 0, 0));
-    m_menuText.setPosition(sf::Vector2f(10, 10));
+    m_menuText.setPosition(sf::Vector2f(200, 100));
     m_game->window().draw(m_menuText);
 
     // draw all of the menu options
@@ -139,7 +139,7 @@ void Scene_Menu::sRender()
     {
         m_menuText.setString(m_menuStrings[i]);
         m_menuText.setFillColor(i == m_selectedMenuIndex ? sf::Color::White : sf::Color(100, 100, 100));
-        m_menuText.setPosition(sf::Vector2f(10, 110 + i * 72));
+        m_menuText.setPosition(sf::Vector2f(200, 250 + i * 72));
         m_game->window().draw(m_menuText);
     }
 
@@ -147,7 +147,7 @@ void Scene_Menu::sRender()
     m_menuText.setCharacterSize(20);
     m_menuText.setFillColor(sf::Color(100, 0, 0));
     m_menuText.setString("Up: W     Down: S    Select: D      Back: ESC");
-    m_menuText.setPosition(sf::Vector2f(10, 690));
+    m_menuText.setPosition(sf::Vector2f(200, 750));
     m_game->window().draw(m_menuText);
 }
 

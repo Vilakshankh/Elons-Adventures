@@ -14,6 +14,7 @@
 ///\/\/\\\\////\/\/\//\\//\\\/\/\/\/\/\\\\////\/\/\//\\//\\\/\/\
 
 #include "Scene_Menu.h"
+#include "Scene_LevelEditor.h"
 #include "Scene_EA.h"
 #include "Common.h"
 #include "Assets.h"
@@ -101,8 +102,9 @@ void Scene_Menu::sDoAction(const Action &action)
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "level-editor")
             {
-                std::cout << "Level Editor not deployed yet"
-                          << "\n";
+                m_game->changeScene("LEVELEDITOR", std::make_shared<Scene_LevelEditor>(m_game, m_levelPaths[0]));
+                m_game->assets().getSound("MusicTitle").stop();
+                
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "reset-progress")
             {

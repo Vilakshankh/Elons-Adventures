@@ -12,7 +12,8 @@
     <ClCompile Include="..\src\Scene.cpp" />
     <ClCompile Include="..\src\Scene_Menu.cpp" />
     <ClCompile Include="..\src\Action.cpp" />
-    <ClCompile Include="..\src\Scene_Zelda.cpp" />
+    <ClCompile Include="..\src\Scene_EA.cpp" />
+    <ClCompile Include="..\src\Scene_LevelEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Assets.h" />
@@ -27,6 +28,7 @@
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\Scene_Menu.h" />
     <ClInclude Include="..\src\Action.h" />
-    <ClInclude Include="..\src\Scene_Zelda.h" />
+    <ClInclude Include="..\src\Scene_EA.h" />
+    <ClInclude Include="..\src\Scene_LevelEditor.h" />
   </ItemGroup>
 </Project>

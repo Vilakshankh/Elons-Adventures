@@ -26,10 +26,11 @@
     <ClCompile Include="..\src\EntityManager.cpp" />
     <ClCompile Include="..\src\GameEngine.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
+    <ClCompile Include="..\src\Scene_EA.cpp" />
+    <ClCompile Include="..\src\Scene_LevelEditor.cpp" />
     <ClCompile Include="..\src\Scene_Menu.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Physics.cpp" />
-    <ClCompile Include="..\src\Scene_Zelda.cpp" />
     <ClCompile Include="..\src\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -42,9 +43,10 @@
     <ClInclude Include="..\src\EntityManager.h" />
     <ClInclude Include="..\src\GameEngine.h" />
     <ClInclude Include="..\src\Scene.h" />
+    <ClInclude Include="..\src\Scene_EA.h" />
+    <ClInclude Include="..\src\Scene_LevelEditor.h" />
     <ClInclude Include="..\src\Scene_Menu.h" />
     <ClInclude Include="..\src\Physics.h" />
-    <ClInclude Include="..\src\Scene_Zelda.h" />
     <ClInclude Include="..\src\Vec2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -209,5 +211,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ImportGroup Label="0.125.25240476.25"></ImportGroup>
+  <ImportGroup Label="0.125.25240476.25">
+  </ImportGroup>
 </Project>

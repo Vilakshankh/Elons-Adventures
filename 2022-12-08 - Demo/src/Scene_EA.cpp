@@ -737,37 +737,40 @@ void Scene_EA::sCamera()
     sf::View view = m_game->window().getView();
     sf::View newView;
 
-    if (m_follow) // Follow camera
-    {
-        newView = sf::View(sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y), sf::Vector2f(1280, 768));
-    }
-    else // Room camera
-    {
+    newView = sf::View(sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y), sf::Vector2f(1280, 768));
 
-        Vec2 cPos = m_player->getComponent<CTransform>().pos;
-        int xRoom, yRoom;
 
-        // -100/1280 returns 0, so if x or y is negative -1 to calculate current room
-        if (cPos.x < 0)
-        {
-            xRoom = int(cPos.x / 1280) - 1 * 1280;
-        }
-        else
-        {
-            xRoom = int(cPos.x / 1280) * 1280;
-        }
+    //if (m_follow) // Follow camera
+    //{
+    //    newView = sf::View(sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y), sf::Vector2f(1280, 768));
+    //}
+    //else // Room camera
+    //{
 
-        if (cPos.y < 0)
-        {
-            yRoom = int(cPos.y / 768) - 1 * 768;
-        }
-        else
-        {
-            yRoom = int(cPos.y / 768) * 768;
-        }
+    //    Vec2 cPos = m_player->getComponent<CTransform>().pos;
+    //    int xRoom, yRoom;
 
-        newView = sf::View(sf::FloatRect(xRoom, yRoom, 1280, 768));
-    }
+    //    // -100/1280 returns 0, so if x or y is negative -1 to calculate current room
+    //    if (cPos.x < 0)
+    //    {
+    //        xRoom = int(cPos.x / 1280) - 1 * 1280;
+    //    }
+    //    else
+    //    {
+    //        xRoom = int(cPos.x / 1280) * 1280;
+    //    }
+
+    //    if (cPos.y < 0)
+    //    {
+    //        yRoom = int(cPos.y / 768) - 1 * 768;
+    //    }
+    //    else
+    //    {
+    //        yRoom = int(cPos.y / 768) * 768;
+    //    }
+
+    //    newView = sf::View(sf::FloatRect(xRoom, yRoom, 1280, 768));
+    //}
 
     m_game->window().setView(newView);
 }

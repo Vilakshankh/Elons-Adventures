@@ -15,6 +15,8 @@
 
 #include "Scene_Menu.h"
 #include "Scene_LevelEditor.h"
+#include "Scene_Map.h"
+#include "Scene_Volume.h"
 #include "Scene_EA.h"
 #include "Common.h"
 #include "Assets.h"
@@ -39,14 +41,14 @@ void Scene_Menu::init()
     m_title = "Elon's Adventure";
 
     m_menuStrings.push_back("Play/Continue");
-    m_menuStrings.push_back("Rebind Controls");
+    m_menuStrings.push_back("Map");
     m_menuStrings.push_back("Game Volume");
     m_menuStrings.push_back("Level Editor");
     m_menuStrings.push_back("Reset Progress");
     m_menuStrings.push_back("Quit");
 
     m_levelPaths.push_back("level1.txt");
-    m_levelPaths.push_back("rebind-keys");
+    m_levelPaths.push_back("map");
     m_levelPaths.push_back("game-volume");
     m_levelPaths.push_back("level-editor");
     m_levelPaths.push_back("reset-progress");
@@ -91,15 +93,15 @@ void Scene_Menu::sDoAction(const Action &action)
                 m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
                 m_game->assets().getSound("MusicTitle").stop();
             }
-            else if (m_levelPaths[m_selectedMenuIndex] == "rebind-keys")
+            else if (m_levelPaths[m_selectedMenuIndex] == "map")
             {
-                std::cout << "Rebind Keys not deployed yet"
-                          << "\n";
+                m_game->changeScene("MAP", std::make_shared<Scene_Map>(m_game));
+                m_game->assets().getSound("MusicTitle").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "game-volume")
             {
-                std::cout << "Game Volume not deployed yet"
-                          << "\n";
+                m_game->changeScene("VOLUME", std::make_shared<Scene_Volume>(m_game));
+                m_game->assets().getSound("MusicTitle").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "level-editor")
             {
@@ -136,12 +138,14 @@ void Scene_Menu::sRender()
     m_menuText.setPosition(sf::Vector2f(200, 100));
     m_game->window().draw(m_menuText);
 
+    m_menuText.setCharacterSize(35);
+
     // draw all of the menu options
     for (size_t i = 0; i < m_menuStrings.size(); i++)
     {
         m_menuText.setString(m_menuStrings[i]);
         m_menuText.setFillColor(i == m_selectedMenuIndex ? sf::Color::White : sf::Color(100, 100, 100));
-        m_menuText.setPosition(sf::Vector2f(200, 250 + i * 72));
+        m_menuText.setPosition(sf::Vector2f(200, 200 + i * 72));
         m_game->window().draw(m_menuText);
     }
 
@@ -149,7 +153,7 @@ void Scene_Menu::sRender()
     m_menuText.setCharacterSize(20);
     m_menuText.setFillColor(sf::Color(100, 0, 0));
     m_menuText.setString("Up: W     Down: S    Select: D      Back: ESC");
-    m_menuText.setPosition(sf::Vector2f(200, 750));
+    m_menuText.setPosition(sf::Vector2f(200, 700));
     m_game->window().draw(m_menuText);
 }
 

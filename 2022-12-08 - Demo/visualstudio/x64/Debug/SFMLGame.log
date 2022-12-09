@@ -1,2 +1,7 @@
-﻿  Scene_LevelEditor.cpp
+﻿  Scene_Map.cpp
+  Scene_Menu.cpp
+  Scene_Volume.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\ctgmath(23,22): warning C4996: '_Header_ctgmath': warning STL4004: <ccomplex>, <cstdalign>, <cstdbool>, and <ctgmath> are deprecated in C++17. You can define _SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING or _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS to acknowledge that you have received this warning. (compiling source file ..\src\Scene_Volume.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\ctgmath(23,22): warning C4996: '_Header_ctgmath': warning STL4004: <ccomplex>, <cstdalign>, <cstdbool>, and <ctgmath> are deprecated in C++17. You can define _SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING or _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS to acknowledge that you have received this warning. (compiling source file ..\src\Scene_Menu.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\ctgmath(23,22): warning C4996: '_Header_ctgmath': warning STL4004: <ccomplex>, <cstdalign>, <cstdbool>, and <ctgmath> are deprecated in C++17. You can define _SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING or _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS to acknowledge that you have received this warning. (compiling source file ..\src\Scene_Map.cpp)
   SFMLGame.vcxproj -> C:\Users\Jason L\source\repos\4300_Elons_Adventure\2022-12-08 - Demo\bin\SFMLGame_d.exe

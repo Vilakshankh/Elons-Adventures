@@ -3,8 +3,8 @@
 //  Assignment       COMP4300 - Assignment 4
 //  Professor:       David Churchill
 //  Year / Term:     2022-09
-//  File Name:       Scene_Zelda.h
-// 
+//  File Name:       Scene_EA.h
+//
 //  Student Name:    Jason Lomond
 //  Student User:    jblomond
 //  Student Email:   jblomond@mun.ca
@@ -12,9 +12,9 @@
 //  Group Member(s): [enter student name(s)]
 //
 ///\/\/\\\\////\/\/\//\\//\\\/\/\/\/\/\\\\////\/\/\//\\//\\\/\/\
-                                
+
 #pragma once
-                                
+
 #include "Common.h"
 #include "Scene.h"
 #include <map>
@@ -22,7 +22,7 @@
 
 #include "EntityManager.h"
 
-class Scene_Zelda : public Scene
+class Scene_EA : public Scene
 {
 
     struct PlayerConfig
@@ -32,38 +32,35 @@ class Scene_Zelda : public Scene
     };
 
 protected:
-
     std::shared_ptr<Entity> m_player;
-    std::string             m_levelPath;
-    PlayerConfig            m_playerConfig;
-    bool                    m_drawTextures = true;
-    bool                    m_drawCollision = false;
-    bool                    m_follow = false;
-    
-    void init(const std::string & levelPath);
+    std::string m_levelPath;
+    PlayerConfig m_playerConfig;
+    bool m_drawTextures = true;
+    bool m_drawCollision = false;
+    bool m_follow = false;
 
-    void loadLevel(const std::string & filename);
+    void init(const std::string &levelPath);
+
+    void loadLevel(const std::string &filename);
 
     void onEnd();
     void update();
     void spawnPlayer();
     void spawnSword(std::shared_ptr<Entity> entity);
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
-    
+
     void sMovement();
     void sAI();
     void sStatus();
     void sAnimation();
     void sCollision();
     void sCamera();
-    
 
 public:
+    Scene_EA(GameEngine *gameEngine, const std::string &levelPath);
 
-    Scene_Zelda(GameEngine* gameEngine, const std::string& levelPath);
-                                
     void sRender();
-    void sDoAction(const Action& action);
+    void sDoAction(const Action &action);
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

@@ -23,6 +23,8 @@ class Component
 public:
     bool has = false;
 };
+
+
                                 
 class CTransform : public Component
 {
@@ -88,8 +90,19 @@ public:
     bool left = false;
     bool right = false;
     bool attack = false;
+    Vec2 mousePos = Vec2(0, 0);
 
     CInput() {}
+};
+
+class CDraggable : public Component
+{
+public:
+    bool dragging = false;
+    bool edit = false;
+    CDraggable() {}
+    CDraggable(bool e)
+        :edit(e) {}
 };
 
 class CBoundingBox : public Component

@@ -128,7 +128,7 @@ void Scene_EA::spawnPlayer()
 {
     m_player = m_entityManager.addEntity("player");
     m_player->addComponent<CTransform>(Vec2(m_playerConfig.X, m_playerConfig.Y));
-    m_player->addComponent<CAnimation>(m_game->assets().getAnimation("StandDown"), true);
+    m_player->addComponent<CAnimation>(m_game->assets().getAnimation("Running"), true);
     m_player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), true, false);
     m_player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
     m_player->addComponent<CInput>();
@@ -195,38 +195,6 @@ void Scene_EA::sMovement()
         e->getComponent<CTransform>().pos += e->getComponent<CTransform>().velocity;
     }
 
-    //OLD CODE, REMOVE IF WORKING
-    /*Vec2 playerVelocity(0, 0);
-
-    if (m_player->getComponent<CInput>().up)
-    {
-        playerVelocity = Vec2(0, -m_playerConfig.SPEED);
-    }
-    else if (m_player->getComponent<CInput>().down)
-    {
-        playerVelocity = Vec2(0, m_playerConfig.SPEED);
-    }
-    else if (m_player->getComponent<CInput>().left)
-    {
-        playerVelocity = Vec2(-m_playerConfig.SPEED, 0);
-    }
-    else if (m_player->getComponent<CInput>().right)
-    {
-        playerVelocity = Vec2(m_playerConfig.SPEED, 0);
-    }
-
-    m_player->getComponent<CTransform>().velocity = playerVelocity;
-
-    for (auto e : m_entityManager.getEntities())
-    {
-        e->getComponent<CTransform>().prevPos = e->getComponent<CTransform>().pos;
-        e->getComponent<CTransform>().pos += e->getComponent<CTransform>().velocity;
-
-        if (e->tag() == "sword")
-        {
-            e->getComponent<CTransform>().pos += m_player->getComponent<CTransform>().pos - m_player->getComponent<CTransform>().prevPos;
-        }
-    }*/
 }
 
 void Scene_EA::sDoAction(const Action &action)
@@ -264,6 +232,8 @@ void Scene_EA::sDoAction(const Action &action)
         }
         else if (action.name() == "UP")
         {
+            //USED UP FOR ALL DIRECTIONS
+            //FIX
             m_player->getComponent<CInput>().up = true;
             m_player->getComponent<CTransform>().facing = Vec2(0.0, 1.0);
             m_player->getComponent<CState>().state = "run";
@@ -291,6 +261,10 @@ void Scene_EA::sDoAction(const Action &action)
             m_player->getComponent<CInput>().attack = true;
             spawnSword(m_player);
             m_player->getComponent<CState>().state = "attack";
+        }
+        else if (action.name() == "MOUSE_MOVE" && !m_player->getComponent<CInput>().attack)
+        {
+            m_player->getComponent<CInput>().mousePos = action.pos();
         }
     }
     else if (action.type() == "END")
@@ -593,126 +567,154 @@ void Scene_EA::sAnimation()
     CInput playerInput = m_player->getComponent<CInput>();
     std::string curAnimation = m_player->getComponent<CAnimation>().animation.getName();
 
-    if (playerTransform.facing.x == 1.0f) // If the plaer is facing left
-    {
-        m_player->getComponent<CTransform>().scale.x = 1.0;
-        // Check input, give animation based off current input
-        if (playerInput.attack)
-        {
-            if (curAnimation != "AtkRight")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkRight");
-            }
-        }
-        else if (playerInput.right)
-        {
-            if (curAnimation != "RunRight")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunRight");
-            }
-        }
-        else
-        {
-            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandRight");
-        }
-    }
-    else if (playerTransform.facing.x == -1.0f) // If the plaer is facing right
-    {
-        m_player->getComponent<CTransform>().scale.x = -1.0;
-        if (playerInput.attack)
-        {
-            if (curAnimation != "AtkRight")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkRight");
-            }
-        }
-        else if (playerInput.left)
-        {
-            if (curAnimation != "RunRight")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunRight");
-            }
-        }
-        else
-        {
-            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandRight");
-        }
-    }
-    else if (playerTransform.facing.y == 1.0f) // If the plaer is facing up
-    {
 
-        if (playerInput.attack)
-        {
-            if (curAnimation != "AtkUp")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkUp");
-            }
-        }
-        else if (playerInput.up)
-        {
-            if (curAnimation != "RunUp")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunUp");
-            }
-        }
-        else
-        {
-            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandUp");
-        }
-    }
-    else // If the plaer is facing down
+    //Works but player needs to be flipped around
+    //FIX
+    bool input = m_player->getComponent<CInput>().up || m_player->getComponent<CInput>().down || m_player->getComponent<CInput>().left || m_player->getComponent<CInput>().right;
+    
+    if (m_player->getComponent<CAnimation>().animation.getName() != "Running" && input)
     {
+        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Running");
+    }
+    else if (m_player->getComponent<CAnimation>().animation.getName() != "Rock" && !input)
+    {
+        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Rock");
+    }
+    
 
-        if (playerInput.attack)
-        {
-            if (curAnimation != "AtkDown")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkDown");
-            }
-        }
-        else if (playerInput.down)
-        {
-            if (curAnimation != "RunDown")
-            {
-                m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunDown");
-            }
-        }
-        else
-        {
-            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandDown");
-        }
+    Vec2 direction = m_player->getComponent<CInput>().mousePos.abs() - m_player->getComponent<CTransform>().pos.abs();
+
+    if (m_player->getComponent<CInput>().mousePos.y < m_player->getComponent<CTransform>().pos.y)
+    {
+        float mouseAngle = -atan(direction.x / direction.y) * 180 / 3.14;
+        m_player->getComponent<CTransform>().angle = mouseAngle;
+    }
+    else
+    {
+        float mouseAngle = -atan(direction.x / direction.y) * 180 / 3.14;
+        m_player->getComponent<CTransform>().angle = mouseAngle + 180;
     }
 
-    // sword animation/direction
-    for (auto sword : m_entityManager.getEntities("sword"))
-    {
-        CTransform entityTransform = m_player->getComponent<CTransform>();
-        // Swing sword in correct direction
-        if (entityTransform.facing.x == 1.0f)
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
-            sword->getComponent<CTransform>().scale.x = 1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x + 64, entityTransform.pos.y);
-        }
-        else if (entityTransform.facing.x == -1.0f)
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
-            sword->getComponent<CTransform>().scale.x = -1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x - 64, entityTransform.pos.y);
-        }
-        else if (entityTransform.facing.y == 1.0f)
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-            sword->getComponent<CTransform>().scale.y = 1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y - 64);
-        }
-        else
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-            sword->getComponent<CTransform>().scale.y = -1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y + 64);
-        }
-    }
+    //if (playerTransform.facing.x == 1.0f) // If the plaer is facing left
+    //{
+    //    m_player->getComponent<CTransform>().scale.x = 1.0;
+    //    // Check input, give animation based off current input
+    //    if (playerInput.attack)
+    //    {
+    //        if (curAnimation != "AtkRight")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkRight");
+    //        }
+    //    }
+    //    else if (playerInput.right)
+    //    {
+    //        if (curAnimation != "RunRight")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunRight");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandRight");
+    //    }
+    //}
+    //else if (playerTransform.facing.x == -1.0f) // If the plaer is facing right
+    //{
+    //    m_player->getComponent<CTransform>().scale.x = -1.0;
+    //    if (playerInput.attack)
+    //    {
+    //        if (curAnimation != "AtkRight")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkRight");
+    //        }
+    //    }
+    //    else if (playerInput.left)
+    //    {
+    //        if (curAnimation != "RunRight")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunRight");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandRight");
+    //    }
+    //}
+    //else if (playerTransform.facing.y == 1.0f) // If the plaer is facing up
+    //{
+
+    //    if (playerInput.attack)
+    //    {
+    //        if (curAnimation != "AtkUp")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkUp");
+    //        }
+    //    }
+    //    else if (playerInput.up)
+    //    {
+    //        if (curAnimation != "RunUp")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunUp");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandUp");
+    //    }
+    //}
+    //else // If the plaer is facing down
+    //{
+
+    //    if (playerInput.attack)
+    //    {
+    //        if (curAnimation != "AtkDown")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkDown");
+    //        }
+    //    }
+    //    else if (playerInput.down)
+    //    {
+    //        if (curAnimation != "RunDown")
+    //        {
+    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunDown");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandDown");
+    //    }
+    //}
+
+    //// sword animation/direction
+    //for (auto sword : m_entityManager.getEntities("sword"))
+    //{
+    //    CTransform entityTransform = m_player->getComponent<CTransform>();
+    //    // Swing sword in correct direction
+    //    if (entityTransform.facing.x == 1.0f)
+    //    {
+    //        sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
+    //        sword->getComponent<CTransform>().scale.x = 1.0f;
+    //        sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x + 64, entityTransform.pos.y);
+    //    }
+    //    else if (entityTransform.facing.x == -1.0f)
+    //    {
+    //        sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
+    //        sword->getComponent<CTransform>().scale.x = -1.0f;
+    //        sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x - 64, entityTransform.pos.y);
+    //    }
+    //    else if (entityTransform.facing.y == 1.0f)
+    //    {
+    //        sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
+    //        sword->getComponent<CTransform>().scale.y = 1.0f;
+    //        sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y - 64);
+    //    }
+    //    else
+    //    {
+    //        sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
+    //        sword->getComponent<CTransform>().scale.y = -1.0f;
+    //        sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y + 64);
+    //    }
+    //}
 
     // Loops through all entities updating their animation to the next frame
     for (auto e : m_entityManager.getEntities())
@@ -784,7 +786,7 @@ void Scene_EA::sRender()
 {
     // RENDERING DONE FOR YOU
 
-    m_game->window().clear(sf::Color(255, 192, 122));
+    m_game->window().clear(sf::Color(189, 44, 11));
     sf::RectangleShape tick({1.0f, 6.0f});
     tick.setFillColor(sf::Color::Black);
 

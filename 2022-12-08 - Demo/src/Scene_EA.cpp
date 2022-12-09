@@ -182,8 +182,21 @@ void Scene_EA::update()
 
 void Scene_EA::sMovement()
 {
+    if (m_player->getComponent<CInput>().up) { m_player->getComponent<CTransform>().pos += Vec2(0, -m_playerConfig.SPEED); }
+    if (m_player->getComponent<CInput>().down) { m_player->getComponent<CTransform>().pos += Vec2(0, m_playerConfig.SPEED); }
+    if (m_player->getComponent<CInput>().left) { m_player->getComponent<CTransform>().pos += Vec2(-m_playerConfig.SPEED, 0); }
+    if (m_player->getComponent<CInput>().right) { m_player->getComponent<CTransform>().pos += Vec2(m_playerConfig.SPEED, 0); }
 
-    Vec2 playerVelocity(0, 0);
+
+
+    for (auto e : m_entityManager.getEntities())
+    {
+        e->getComponent<CTransform>().prevPos = e->getComponent<CTransform>().pos;
+        e->getComponent<CTransform>().pos += e->getComponent<CTransform>().velocity;
+    }
+
+    //OLD CODE, REMOVE IF WORKING
+    /*Vec2 playerVelocity(0, 0);
 
     if (m_player->getComponent<CInput>().up)
     {
@@ -213,7 +226,7 @@ void Scene_EA::sMovement()
         {
             e->getComponent<CTransform>().pos += m_player->getComponent<CTransform>().pos - m_player->getComponent<CTransform>().prevPos;
         }
-    }
+    }*/
 }
 
 void Scene_EA::sDoAction(const Action &action)

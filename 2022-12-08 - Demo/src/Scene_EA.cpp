@@ -576,9 +576,9 @@ void Scene_EA::sAnimation()
     {
         m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Running");
     }
-    else if (m_player->getComponent<CAnimation>().animation.getName() != "Rock" && !input)
+    else if (m_player->getComponent<CAnimation>().animation.getName() != "Stand" && !input)
     {
-        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Rock");
+        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Stand");
     }
     
 

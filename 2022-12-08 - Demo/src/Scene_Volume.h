@@ -28,7 +28,7 @@ class Scene_Volume : public Scene
 
 protected:
     std::string m_title;
-    size_t m_volume = 0;
+    size_t m_volume = 1;
     std::vector<std::string> m_menuStrings;
     std::vector<std::string> m_levelPaths;
     sf::Text m_menuText;

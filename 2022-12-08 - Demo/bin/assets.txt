@@ -44,7 +44,9 @@ Texture   TexAlienBat	images/astronaut/alien-bat.png
 Texture   TexAlienBug	images/astronaut/alien-bug.png
 Texture   TexAlienHum	images/astronaut/alien-humanoid.png
 Texture   TexRock	images/astronaut/rock.png
+Texture   TexStand	images/astronaut/astro_stand.png
 
+Animation Stand		TexStand	1    0
 Animation Rock		TexRock		1    0
 Animation Running	TexRun		4   15
 Animation Worm		TexAlienWorm	1    0

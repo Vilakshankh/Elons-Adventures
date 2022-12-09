@@ -21,6 +21,7 @@
 #include "GameEngine.h"
 #include "Components.h"
 #include "Action.h"
+#include <tgmath.h>
 
 Scene_Menu::Scene_Menu(GameEngine *gameEngine)
     : Scene(gameEngine)
@@ -104,7 +105,6 @@ void Scene_Menu::sDoAction(const Action &action)
             {
                 m_game->changeScene("LEVELEDITOR", std::make_shared<Scene_LevelEditor>(m_game, m_levelPaths[0]));
                 m_game->assets().getSound("MusicTitle").stop();
-                
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "reset-progress")
             {

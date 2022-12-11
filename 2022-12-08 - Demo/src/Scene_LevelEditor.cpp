@@ -653,37 +653,6 @@ void Scene_LevelEditor::sAnimation()
         m_player->getComponent<CTransform>().angle = mouseAngle + 180;
     }
 
-    // sword animation/direction
-    for (auto sword : m_entityManager.getEntities("sword"))
-    {
-        CTransform entityTransform = m_player->getComponent<CTransform>();
-        // Swing sword in correct direction
-        if (entityTransform.facing.x == 1.0f)
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
-            sword->getComponent<CTransform>().scale.x = 1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x + 64, entityTransform.pos.y);
-        }
-        else if (entityTransform.facing.x == -1.0f)
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
-            sword->getComponent<CTransform>().scale.x = -1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x - 64, entityTransform.pos.y);
-        }
-        else if (entityTransform.facing.y == 1.0f)
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-            sword->getComponent<CTransform>().scale.y = 1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y - 64);
-        }
-        else
-        {
-            sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-            sword->getComponent<CTransform>().scale.y = -1.0f;
-            sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y + 64);
-        }
-    }
-
     // Loops through all entities updating their animation to the next frame
     for (auto e : m_entityManager.getEntities())
     {
@@ -721,7 +690,7 @@ void Scene_LevelEditor::sRender()
 {
     // RENDERING DONE FOR YOU
 
-    m_game->window().clear(sf::Color(255, 192, 122));
+    m_game->window().clear(sf::Color(189, 44, 11));
     sf::RectangleShape tick({1.0f, 6.0f});
     tick.setFillColor(sf::Color::Black);
 

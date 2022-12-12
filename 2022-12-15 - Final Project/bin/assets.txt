@@ -37,14 +37,14 @@ Texture   TexBlack      images/tloz/tile_black.png
 Texture   TexTektite    images/tloz/tektite.png
 Texture   TexKnight     images/tloz/knight.png
 Texture   TexHeart      images/tloz/item_heart.png
-Texture   TexRun	images/astronaut/astro_run.png
-Texture   TexAlienWorm	images/astronaut/alien-worm-1.png
-Texture   TexAlienIn	images/astronaut/alien-infrared-1.png
-Texture   TexAlienBat	images/astronaut/alien-bat.png
-Texture   TexAlienBug	images/astronaut/alien-bug.png
-Texture   TexAlienHum	images/astronaut/alien-humanoid.png
-Texture   TexRock	images/astronaut/rock.png
-Texture   TexStand	images/astronaut/astro_stand.png
+Texture   TexRun	images/EA/astro_run.png
+Texture   TexAlienWorm	images/EA/alien-worm-1.png
+Texture   TexAlienIn	images/EA/alien-infrared-1.png
+Texture   TexAlienBat	images/EA/alien-bat.png
+Texture   TexAlienBug	images/EA/alien-bug.png
+Texture   TexAlienHum	images/EA/alien-humanoid.png
+Texture   TexRock	images/EA/rock.png
+Texture   TexStand	images/EA/astro_stand.png
 
 Animation Stand		TexStand	1    0
 Animation Rock		TexRock		1    0

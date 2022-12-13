@@ -46,6 +46,7 @@ protected:
     void init(const std::string& levelPath);
 
     void loadLevel(const std::string& filename);
+    void saveLevel(); //const std::string& filename
 
     void onEnd();
     void update();

@@ -49,6 +49,8 @@ protected:
     void spawnSword(std::shared_ptr<Entity> entity);
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
 
+    Vec2 Scene_EA::window2World(const Vec2& windowPos) const;
+
     void sMovement();
     void sAI();
     void sStatus();

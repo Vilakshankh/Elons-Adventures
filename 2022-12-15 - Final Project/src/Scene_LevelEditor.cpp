@@ -24,6 +24,7 @@
 Scene_LevelEditor::Scene_LevelEditor(GameEngine *game, const std::string &levelPath)
     : Scene(game), m_levelPath(levelPath)
 {
+    std::string levelFile;
     init(m_levelPath);
 }
 
@@ -109,6 +110,7 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
             npc->addComponent<CBoundingBox>(m_game->assets().getAnimation(nName).getSize(), nMove, nVision);
             npc->addComponent<CHealth>(nHealth, nHealth);
             npc->addComponent<CDamage>(nDamage);
+            npc->addComponent<CDraggable>(true);
         }
 
         // load player config
@@ -116,6 +118,13 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
         {
             fin >> m_playerConfig.X >> m_playerConfig.Y >> m_playerConfig.CX >> m_playerConfig.CY >> m_playerConfig.SPEED >> m_playerConfig.HEALTH;
             m_playerConfig.SPEED *= 3;
+
+            auto player = m_entityManager.addEntity("playerEditor");
+            player->addComponent<CTransform>(Vec2(m_playerConfig.X, m_playerConfig.Y));
+            player->addComponent<CAnimation>(m_game->assets().getAnimation("StandDown"), true);
+            player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), false, false);
+            player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
+            player->addComponent<CDraggable>(true);
         }
     }
     spawnPlayer();
@@ -162,8 +171,7 @@ void Scene_LevelEditor::sDragAndDrop()
     {
         if (e->hasComponent<CDraggable>() && e->getComponent<CDraggable>().dragging)
         {
-            Vec2 worldPos = window2World(m_mpos);
-            e->getComponent<CTransform>().pos = worldPos;
+            e->getComponent<CTransform>().pos = window2World(m_player->getComponent<CInput>().mousePos);
         }
     }
 }
@@ -172,11 +180,11 @@ void Scene_LevelEditor::sLevelMenu()
 {
     // Spawns a tile ever second
     // FIX
-    auto tile = m_entityManager.addEntity("tile");
+    /*auto tile = m_entityManager.addEntity("tile");
     tile->addComponent<CAnimation>(m_game->assets().getAnimation("WaterMM"), true);
     tile->addComponent<CTransform>();
     tile->addComponent<CBoundingBox>(m_game->assets().getAnimation("WaterMM").getSize(), false, false);
-    tile->addComponent<CDraggable>(true);
+    tile->addComponent<CDraggable>(true);*/
 
     for (auto e : m_entityManager.getEntities("tile"))
     {
@@ -309,12 +317,12 @@ void Scene_LevelEditor::sDoAction(const Action &action)
             // spawnSword(m_player);
             m_player->getComponent<CState>().state = "attack";
         }
-        else if (action.name() == "MOUSE_MOVE" && !m_player->getComponent<CInput>().attack)
+        else if (action.name() == "MOUSE_MOVE")
         {
             m_player->getComponent<CInput>().mousePos = action.pos();
 
-            m_mpos = action.pos();
-            Vec2 worldPos = window2World(m_mpos);
+            //m_mpos = ;
+            Vec2 worldPos = window2World(action.pos());
             m_mouseShape.setPosition(worldPos.x, worldPos.y);
         }
         else if (action.name() == "LEFT_CLICK")
@@ -681,6 +689,7 @@ void Scene_LevelEditor::onEnd()
     // changes music to menu
     // m_game->assets().getSound("MusicPlay").stop();
     // m_game->assets().getSound("MusicTitle").play();
+    saveLevel();
 
     m_hasEnded = true;
     m_game->changeScene("MENU", nullptr, true);
@@ -815,6 +824,60 @@ void Scene_LevelEditor::sRender()
         }
     }
 }
+
+//Saving file
+void Scene_LevelEditor::saveLevel() //const std::string& filename
+{
+    std::ofstream fout;
+    fout.open("test.txt");
+
+    for (auto e : m_entityManager.getEntities("tile"))
+    {
+        fout << "Tile "
+            << e->getComponent<CAnimation>().animation.getName()
+            << "   0  0 "
+            << int(e->getComponent<CTransform>().pos.x / 64)
+            << " "
+            << int(e->getComponent<CTransform>().pos.y / 64)
+            << " "
+            << e->getComponent<CBoundingBox>().blockMove
+            << " "
+            << e->getComponent<CBoundingBox>().blockVision
+            << "\n";
+    }
+
+    for (auto e : m_entityManager.getEntities("npc"))
+    {
+        fout << "NPC "
+            << e->getComponent<CAnimation>().animation.getName()
+            << "   0  0 "
+            << int(e->getComponent<CTransform>().pos.x / 64)
+            << " "
+            << int(e->getComponent<CTransform>().pos.y / 64)
+            << " "
+            << e->getComponent<CBoundingBox>().blockMove
+            << " "
+            << e->getComponent<CBoundingBox>().blockVision
+            << " "
+            << e->getComponent<CHealth>().max
+            << " Follow "
+            << e->getComponent<CPatrol>().speed
+            << "\n";
+
+    }
+
+    for (auto e : m_entityManager.getEntities("playerEditor"))
+    {
+        fout << "Player "
+            << e->getComponent<CTransform>().pos.x << " " << e->getComponent<CTransform>().pos.y << " "
+            << e->getComponent<CBoundingBox>().size.x << " " << e->getComponent<CBoundingBox>().size.y << " "
+            << m_playerConfig.SPEED / 3
+            << e->getComponent<CHealth>().max;
+    }
+
+}
+
+
 
 // Copyright (C) David Churchill - All Rights Reserved
 // COMP4300 - 2022-09 - Assignment 4

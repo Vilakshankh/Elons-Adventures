@@ -272,9 +272,9 @@ void Scene_EA::sDoAction(const Action &action)
             spawnSword(m_player);
             m_player->getComponent<CState>().state = "attack";
         }
-        else if (action.name() == "MOUSE_MOVE" && !m_player->getComponent<CInput>().attack)
+        else if (action.name() == "MOUSE_MOVE")
         {
-            m_player->getComponent<CInput>().mousePos = action.pos();
+            m_player->getComponent<CInput>().mousePos = window2World(action.pos());
         }
     }
     else if (action.type() == "END")
@@ -567,6 +567,16 @@ void Scene_EA::sCollision()
             }
         }
     }
+}
+
+Vec2 Scene_EA::window2World(const Vec2& windowPos) const
+{
+    auto view = m_game->window().getView();
+
+    float wx = view.getCenter().x - (m_game->window().getSize().x / 2);
+    float wy = view.getCenter().y - (m_game->window().getSize().y / 2);
+
+    return Vec2(windowPos.x + wx, windowPos.y + wy);
 }
 
 void Scene_EA::sAnimation()

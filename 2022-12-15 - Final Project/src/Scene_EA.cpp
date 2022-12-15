@@ -653,6 +653,33 @@ void Scene_EA::onEnd()
 void Scene_EA::sRender()
 {
     // RENDERING DONE FOR YOU
+    // sf::Texture background;
+    // background.loadFromFile("images/EA/background.png");
+    // sf::Sprite backgroundSprite;
+    // backgroundSprite.setTexture(background);
+    // // center the sprite
+    // backgroundSprite.setPosition(m_game->window().getSize().x / 2, m_game->window().getSize().y / 2);
+    // sf::Texture lightTexture;
+    // lightTexture.loadFromFile("images/EA/light.png");
+    // sf::Sprite light;
+    // light.setTexture(lightTexture);
+    // sf::RenderTexture target;
+    // sf::Sprite darkness;
+
+    // light.setColor(sf::Color(0, 0, 0, 0));
+    // light.setPosition(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
+    // // sf::RenderTexture target = sf::RenderTexture::create(m_game->window().getSize().x, m_game->window().getSize().y, false);
+    // target.create(m_game->window().getSize().x, m_game->window().getSize().y, false);
+    // target.clear(sf::Color(255, 255, 255, 200));
+    // target.draw(light, sf::BlendMultiply);
+    // target.display();
+
+    // m_game->window().clear(sf::Color(0, 150, 255, 255));
+    // m_game->window().draw(backgroundSprite);
+    // darkness.setTexture(target.getTexture());
+
+    // m_game->window().draw(darkness, sf::BlendAdd);
+    // m_game->window().display();
 
     m_game->window().clear(sf::Color(189, 44, 11));
     sf::RectangleShape tick({1.0f, 6.0f});

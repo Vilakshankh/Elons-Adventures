@@ -4,7 +4,7 @@
 //  Professor:       David Churchill
 //  Year / Term:     2022-09
 //  File Name:       GameEngine.h
-// 
+//
 //  Student Name:    Jason Lomond
 //  Student User:    jblomond
 //  Student Email:   jblomond@mun.ca
@@ -14,28 +14,28 @@
 ///\/\/\\\\////\/\/\//\\//\\\/\/\/\/\/\\\\////\/\/\//\\//\\\/\/\
 
 #pragma once
-                                
+
 #include "Common.h"
 #include "Scene.h"
 #include "Assets.h"
 
 #include <memory>
-                                
+
 typedef std::map<std::string, std::shared_ptr<Scene>> SceneMap;
 
 class GameEngine
 {
 
 protected:
+    sf::RenderWindow m_window;
+    Assets m_assets;
+    std::string m_currentScene;
+    SceneMap m_sceneMap;
+    size_t m_simulationSpeed = 1;
 
-    sf::RenderWindow    m_window;
-    Assets              m_assets;
-    std::string         m_currentScene;
-    SceneMap            m_sceneMap;
-    size_t              m_simulationSpeed = 1;
-    bool                m_running = true;
+    bool m_running = true;
 
-    void init(const std::string & path);
+    void init(const std::string &path);
     void update();
 
     void sUserInput();
@@ -43,18 +43,18 @@ protected:
     std::shared_ptr<Scene> currentScene();
 
 public:
-    
-    GameEngine(const std::string & path);
+    GameEngine(const std::string &path);
+    sf::Clock time;
 
-    void changeScene(const std::string & sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene = false);
+    void changeScene(const std::string &sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene = false);
 
     void quit();
     void run();
 
-    void playSound(const std::string& soundName);
+    void playSound(const std::string &soundName);
 
-    sf::RenderWindow & window();
-    Assets& assets();
+    sf::RenderWindow &window();
+    Assets &assets();
     bool isRunning();
 };
 

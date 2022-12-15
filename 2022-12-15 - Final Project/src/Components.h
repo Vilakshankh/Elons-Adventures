@@ -4,7 +4,7 @@
 //  Professor:       David Churchill
 //  Year / Term:     2022-09
 //  File Name:       Components.h
-// 
+//
 //  Student Name:    Jason Lomond
 //  Student User:    jblomond
 //  Student Email:   jblomond@mun.ca
@@ -24,24 +24,21 @@ public:
     bool has = false;
 };
 
-
-                                
 class CTransform : public Component
 {
 public:
-    Vec2 pos = { 0.0, 0.0 };
-    Vec2 prevPos = { 0.0, 0.0 };
-    Vec2 scale = { 1.0, 1.0 };
-    Vec2 velocity = { 0.0, 0.0 };
-    Vec2 facing = { 0.0, 1.0 };
+    Vec2 pos = {0.0, 0.0};
+    Vec2 prevPos = {0.0, 0.0};
+    Vec2 scale = {1.0, 1.0};
+    Vec2 velocity = {0.0, 0.0};
+    Vec2 facing = {0.0, 1.0};
     float angle = 0;
-                                
-    CTransform() {}
-    CTransform(const Vec2& p)
-        : pos(p) {}
-    CTransform(const Vec2& p, const Vec2& sp, const Vec2& sc, float a)
-        : pos(p), prevPos(p), velocity(sp), scale(sc), angle(a) {}
 
+    CTransform() {}
+    CTransform(const Vec2 &p)
+        : pos(p) {}
+    CTransform(const Vec2 &p, const Vec2 &sp, const Vec2 &sc, float a)
+        : pos(p), prevPos(p), velocity(sp), scale(sc), angle(a) {}
 };
 
 class CLifeSpan : public Component
@@ -53,7 +50,7 @@ public:
     CLifeSpan(int duration, int frame)
         : lifespan(duration), frameCreated(frame) {}
 };
-                                
+
 class CDamage : public Component
 {
 public:
@@ -71,7 +68,7 @@ public:
     CInvincibility(int f)
         : iframes(f) {}
 };
-                                
+
 class CHealth : public Component
 {
 public:
@@ -102,7 +99,7 @@ public:
     bool edit = false;
     CDraggable() {}
     CDraggable(bool e)
-        :edit(e) {}
+        : edit(e) {}
 };
 
 class CBoundingBox : public Component
@@ -113,9 +110,9 @@ public:
     bool blockMove = false;
     bool blockVision = false;
     CBoundingBox() {}
-    CBoundingBox(const Vec2& s)
+    CBoundingBox(const Vec2 &s)
         : size(s), halfSize(s.x / 2, s.y / 2) {}
-    CBoundingBox(const Vec2& s, bool m, bool v)
+    CBoundingBox(const Vec2 &s, bool m, bool v)
         : size(s), blockMove(m), blockVision(v), halfSize(s.x / 2, s.y / 2) {}
 };
 
@@ -125,29 +122,36 @@ public:
     Animation animation;
     bool repeat = false;
     CAnimation() {}
-    CAnimation(const Animation& animation, bool r)
+    CAnimation(const Animation &animation, bool r)
         : animation(animation), repeat(r) {}
 };
-                                
+class CShader : public Component
+{
+public:
+    std::string shaderName;
+    CShader() {}
+    CShader(std::string shaderName)
+        : shaderName(shaderName) {}
+};
+
 class CState : public Component
 {
 public:
     std::string state = "stand";
     CState() {}
-    CState(const std::string& s) : state(s) {}
+    CState(const std::string &s) : state(s) {}
 };
 
 class CFollowPlayer : public Component
 {
 public:
-    Vec2 home = { 0, 0 };
+    Vec2 home = {0, 0};
     float speed = 0;
     CFollowPlayer() {}
     CFollowPlayer(Vec2 p, float s)
         : home(p), speed(s) {}
-
 };
-                                
+
 class CPatrol : public Component
 {
 public:
@@ -155,7 +159,7 @@ public:
     size_t currentPosition = 0;
     float speed = 0;
     CPatrol() {}
-    CPatrol(std::vector<Vec2>& pos, float s) : positions(pos), speed(s) {}
+    CPatrol(std::vector<Vec2> &pos, float s) : positions(pos), speed(s) {}
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

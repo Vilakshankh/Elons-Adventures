@@ -47,6 +47,8 @@ protected:
 
     void loadLevel(const std::string& filename);
     void saveLevel(); //const std::string& filename
+    void spawnEditorItems();
+    void snap2Grid(std::shared_ptr<Entity>& e);
 
     void onEnd();
     void update();

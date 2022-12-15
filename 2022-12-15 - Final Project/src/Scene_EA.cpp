@@ -69,18 +69,18 @@ void Scene_EA::loadLevel(const std::string &filename)
     {
         if (label == "Tile")
         {
-            fin >> tName >> roomX >> roomY >> tGridX >> tGridY >> bMove >> bVision;
+            fin >> tName >> tGridX >> tGridY >> bMove >> bVision;
             auto tile = m_entityManager.addEntity("tile");
 
             // add tiles to entity manager list
             tile->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
-            tile->addComponent<CTransform>(getPosition(roomX, roomY, tGridX, tGridY));
+            tile->addComponent<CTransform>(Vec2(tGridX * 64, tGridY * 64));
             tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), bMove, bVision);
         }
 
         if (label == "NPC")
         {
-            fin >> nName >> nRoomX >> nRoomY >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
+            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
 
             // Checks type of AI
             auto npc = m_entityManager.addEntity("npc");
@@ -104,7 +104,7 @@ void Scene_EA::loadLevel(const std::string &filename)
 
             // Gives npc all remaining components
             npc->addComponent<CAnimation>(m_game->assets().getAnimation(nName), true);
-            npc->addComponent<CTransform>(getPosition(nRoomX, nRoomY, nGridX, nGridY));
+            npc->addComponent<CTransform>(Vec2(nGridX * 64, nGridY * 64));
             npc->addComponent<CBoundingBox>(m_game->assets().getAnimation(nName).getSize(), nMove, nVision);
             npc->addComponent<CHealth>(nHealth, nHealth);
             npc->addComponent<CDamage>(nDamage);
@@ -183,21 +183,23 @@ void Scene_EA::update()
 
 void Scene_EA::sMovement()
 {
+    
+    m_player->getComponent<CTransform>().velocity = Vec2(0, 0);
     if (m_player->getComponent<CInput>().up)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(0, -m_playerConfig.SPEED);
+        m_player->getComponent<CTransform>().velocity += Vec2(0, -m_playerConfig.SPEED);
     }
     if (m_player->getComponent<CInput>().down)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(0, m_playerConfig.SPEED);
+        m_player->getComponent<CTransform>().velocity += Vec2(0, m_playerConfig.SPEED);
     }
     if (m_player->getComponent<CInput>().left)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(-m_playerConfig.SPEED, 0);
+        m_player->getComponent<CTransform>().velocity += Vec2(-m_playerConfig.SPEED, 0);
     }
     if (m_player->getComponent<CInput>().right)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(m_playerConfig.SPEED, 0);
+        m_player->getComponent<CTransform>().velocity += Vec2(m_playerConfig.SPEED, 0);
     }
 
     for (auto e : m_entityManager.getEntities())
@@ -470,7 +472,7 @@ void Scene_EA::sCollision()
         Vec2 overlap2 = Physics::GetOverlap(m_player, tile);
         if (overlap2.x > 0 && overlap2.y > 0)
         {
-            Vec2 prevOverlap = Physics::GetPreviousOverlap(m_player, tile);
+            Vec2 prevOverlap2 = Physics::GetPreviousOverlap(m_player, tile);
 
             // condition for collision with heart
             if (tile->getComponent<CAnimation>().animation.getName() == "Heart")
@@ -496,7 +498,7 @@ void Scene_EA::sCollision()
                 m_player->getComponent<CTransform>().pos = blackTiles[rand() % blackTiles.size()]->getComponent<CTransform>().pos + Vec2(0, 80);
             }
 
-            if (prevOverlap.y > 0 && tile->getComponent<CBoundingBox>().blockMove) // Case for horizontal overlap
+            if (prevOverlap2.y > 0 && tile->getComponent<CBoundingBox>().blockMove) // Case for horizontal overlap
             {
                 if (m_player->getComponent<CTransform>().pos.x < tile->getComponent<CTransform>().pos.x)
                 {
@@ -507,7 +509,7 @@ void Scene_EA::sCollision()
                     m_player->getComponent<CTransform>().pos.x += overlap2.x;
                 }
             }
-            else if (prevOverlap.x > 0 && tile->getComponent<CBoundingBox>().blockMove) // Case for vertical overlap
+            else if (prevOverlap2.x > 0 && tile->getComponent<CBoundingBox>().blockMove) // Case for vertical overlap
             {
 
                 if (m_player->getComponent<CTransform>().pos.y < tile->getComponent<CTransform>().pos.y)

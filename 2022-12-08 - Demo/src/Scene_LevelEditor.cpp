@@ -150,8 +150,8 @@ bool isInside(Vec2 pos, std::shared_ptr<Entity> e)
 
 void snap2Grid(std::shared_ptr<Entity> &e)
 {
-    // NEGATIVE NUMBERS MESS IT UP
-    // NEED FIX
+    // NEGATIVE NUMBERS FUCK IT UP
+    // FIX
     e->getComponent<CTransform>().pos.x = int(e->getComponent<CTransform>().pos.x / 64) * 64 + 32;
     e->getComponent<CTransform>().pos.y = int(e->getComponent<CTransform>().pos.y / 64) * 64 + 32;
 }

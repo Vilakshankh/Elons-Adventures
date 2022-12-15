@@ -80,27 +80,12 @@ void Scene_EA::loadLevel(const std::string &filename)
 
         if (label == "NPC")
         {
-            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
+            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> nSpeed;
 
             // Checks type of AI
             auto npc = m_entityManager.addEntity("npc");
-            if (AI == "Patrol")
-            {
-                fin >> N;
-
-                for (int i = 0; i < N; i++)
-                {
-                    fin >> Xi >> Yi;
-
-                    npcPos.push_back(Vec2(Xi, Yi));
-                }
-                npc->addComponent<CPatrol>(npcPos, nSpeed);
-                npcPos = {};
-            }
-            else
-            {
-                npc->addComponent<CFollowPlayer>(getPosition(nRoomX, nRoomY, nGridX, nGridY), nSpeed);
-            }
+            
+            npc->addComponent<CFollowPlayer>(Vec2(nGridX, nGridY), nSpeed);
 
             // Gives npc all remaining components
             npc->addComponent<CAnimation>(m_game->assets().getAnimation(nName), true);
@@ -108,7 +93,22 @@ void Scene_EA::loadLevel(const std::string &filename)
             npc->addComponent<CBoundingBox>(m_game->assets().getAnimation(nName).getSize(), nMove, nVision);
             npc->addComponent<CHealth>(nHealth, nHealth);
             npc->addComponent<CDamage>(nDamage);
+            npc->addComponent<CFollowPlayer>(Vec2(nGridX * 64, nGridY * 64), nSpeed);
         }
+        /*if (label == "Boss")
+        {
+            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> nSpeed;
+
+            auto boss = m_entityManager.addEntity("boss");
+
+            boss->addComponent<CAnimation>(m_game->assets().getAnimation("Boss"), true);
+            boss->addComponent<CTransform>(Vec2(nGridX * 64, nGridY * 64));
+            boss->addComponent<CBoundingBox>(m_game->assets().getAnimation("Boss").getSize(), true, false);
+            boss->addComponent<CHealth>(nHealth, nHealth);
+            boss->addComponent<CDamage>(nDamage);
+            boss->addComponent<CFollowPlayer>(Vec2(nGridX * 64, nGridY * 64), nSpeed);
+
+        }*/
 
         // load player config
         if (label == "Player")
@@ -223,7 +223,7 @@ void Scene_EA::sMovement()
                             (direction.y / playerPos.pos.dist(e->getComponent<CTransform>().pos)));
         
         //how fast missles will travel
-        int speed;
+        int speed = 10;
         desired*= speed;
         Vec2 steering = desired - e->getComponent<CTransform>().velocity;
 
@@ -346,54 +346,28 @@ void Scene_EA::sAI()
 
     for (auto &e : m_entityManager.getEntities("npc"))
     {
-        if (e->hasComponent<CPatrol>())
+        
+        speed = e->getComponent<CFollowPlayer>().speed;
+
+        // Checks if npc has line of sight to player
+        bool los = true;
+        for (auto t : m_entityManager.getEntities("tile"))
         {
+            if (t->getComponent<CBoundingBox>().blockVision && Physics::EntityIntersect(m_player->getComponent<CTransform>().pos, e->getComponent<CTransform>().pos, t))
+            {
+                los = false;
+            }
+        }
 
-            speed = e->getComponent<CPatrol>().speed;
-            // Checks what room npc is in
-            Vec2 rm = e->getComponent<CTransform>().pos;
-            if (rm.x < 0)
-            {
-                xRoom = int(rm.x / 1280) - 1 * 1280;
-            }
-            else
-            {
-                xRoom = int(rm.x / 1280) * 1280;
-            }
-
-            if (rm.y < 0)
-            {
-                yRoom = int(rm.y / 768) - 1 * 768;
-            }
-            else
-            {
-                yRoom = int(rm.y / 768) * 768;
-            }
-            destination = getPosition(xRoom, yRoom, e->getComponent<CPatrol>().positions[e->getComponent<CPatrol>().currentPosition].x, e->getComponent<CPatrol>().positions[e->getComponent<CPatrol>().currentPosition].y);
+        if (los) // if enemy has line of sight to player go to player, else go home
+        {
+            destination = m_player->getComponent<CTransform>().pos;
         }
         else
         {
-            speed = e->getComponent<CFollowPlayer>().speed;
-
-            // Checks if npc has line of sight to player
-            bool los = true;
-            for (auto t : m_entityManager.getEntities("tile"))
-            {
-                if (t->getComponent<CBoundingBox>().blockVision && Physics::EntityIntersect(m_player->getComponent<CTransform>().pos, e->getComponent<CTransform>().pos, t))
-                {
-                    los = false;
-                }
-            }
-
-            if (los) // if enemy has line of sight to player go to player, else go home
-            {
-                destination = m_player->getComponent<CTransform>().pos;
-            }
-            else
-            {
-                destination = e->getComponent<CFollowPlayer>().home;
-            }
+            destination = e->getComponent<CFollowPlayer>().home;
         }
+        
 
         // If not within 10pixels of destination, move towards it
         if (destination.dist(e->getComponent<CTransform>().pos) > 10)
@@ -405,21 +379,15 @@ void Scene_EA::sAI()
             // go to destination
             e->getComponent<CTransform>().velocity = Vec2(xVel, yVel);
         }
-        // If patrol, cycle through positions
-        else if (e->hasComponent<CPatrol>())
+
+        if (e->tag() == "boss")
         {
-            if (e->getComponent<CPatrol>().positions.size() - 1 == e->getComponent<CPatrol>().currentPosition)
+            std::cout << "yuh";
+            if (!e->hasComponent<CCooldown>())
             {
-                e->getComponent<CPatrol>().currentPosition = 0;
+                spawnMissle(e->getComponent<CTransform>().pos);
+                e->addComponent<CCooldown>(120);
             }
-            else
-            {
-                e->getComponent<CPatrol>().currentPosition += 1;
-            }
-        }
-        else
-        {
-            e->getComponent<CTransform>().velocity = Vec2(0, 0);
         }
     }
 }
@@ -455,6 +423,18 @@ void Scene_EA::sStatus()
             else
             {
                 e->removeComponent<CInvincibility>();
+            }
+        }
+
+        if (e->hasComponent<CCooldown>())
+        {
+            if (e->getComponent<CCooldown>().length > 0)
+            {
+                e->getComponent<CCooldown>().length -= 1;
+            }
+            else
+            {
+                e->removeComponent<CCooldown>();
             }
         }
     }

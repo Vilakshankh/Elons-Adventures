@@ -128,7 +128,14 @@ public:
         :real(r) {}
 };
 
-
+class CCooldown : public Component
+{
+public:
+    int length;
+    CCooldown() {}
+    CCooldown(int length)
+        :length(length) {}
+};
 
 class CAnimation : public Component
 {

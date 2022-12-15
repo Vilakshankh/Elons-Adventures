@@ -47,6 +47,9 @@ protected:
     void update();
     void spawnPlayer();
     void spawnSword(std::shared_ptr<Entity> entity);
+
+    void spawnMissle(Vec2 position);
+
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
 
     Vec2 Scene_EA::window2World(const Vec2& windowPos) const;

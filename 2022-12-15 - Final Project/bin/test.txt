@@ -1,5 +1,5 @@
 Tile Rock   0  0 0 0 1 1
-Tile Rock   0  0 8 3 1 1
+Tile Rock   0  0 0 0 1 1
 Tile Rock   0  0 0 1 1 1
 Tile Rock   0  0 0 2 1 1
 Tile Rock   0  0 0 3 1 1
@@ -21,8 +21,8 @@ Tile Rock   0  0 2 0 1 1
 Tile Rock   0  0 3 0 1 1
 Tile Rock   0  0 4 0 1 1
 Tile Rock   0  0 5 0 1 1
-Tile Rock   0  0 9 3 1 1
-Tile Rock   0  0 7 0 1 1
+Tile Rock   0  0 6 0 1 1
+Tile Rock   0  0 5 4 1 1
 Tile Rock   0  0 8 0 1 1
 Tile Rock   0  0 9 0 1 1
 Tile Rock   0  0 10 0 1 1
@@ -37,6 +37,7 @@ Tile Heart   0  0 0 7 1 1
 NPC Bat   0  0 0 1 1 1 1 Follow 0
 NPC Worm   0  0 0 2 1 1 1 Follow 0
 NPC Running   0  0 0 3 1 1 1 Follow 0
-NPC Knight   0  0 0 5 1 1 1 Follow 0
+NPC Knight   0  0 7 2 1 1 1 Follow 0
 NPC Tektite   0  0 0 6 1 1 1 Follow 0
-Player 1056 32 48 48 53
+NPC Knight   0  0 0 5 1 1 1 Follow 0
+Player 640 360 48 48 53

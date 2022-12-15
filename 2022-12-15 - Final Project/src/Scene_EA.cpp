@@ -135,6 +135,17 @@ void Scene_EA::spawnPlayer()
     m_player->addComponent<CInput>();
 }
 
+void Scene_EA::spawnMissle(Vec2 position)
+{
+    auto missle = m_entityManager.addEntity("missle");
+    missle->addComponent<CTransform>(position);
+    missle->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
+    missle->addComponent<CBoundingBox>(m_game->assets().getAnimation("SwordUp").getSize());
+    missle->addComponent<CDamage>(1);
+    missle->getComponent<CTransform>().velocity = Vec2(0, 10);
+    missle->addComponent<CLifeSpan>(120, m_currentFrame);
+}
+
 void Scene_EA::spawnSword(std::shared_ptr<Entity> entity)
 {
 
@@ -200,6 +211,30 @@ void Scene_EA::sMovement()
     if (m_player->getComponent<CInput>().right)
     {
         m_player->getComponent<CTransform>().velocity += Vec2(m_playerConfig.SPEED, 0);
+    }
+    CTransform playerPos = m_player->getComponent<CTransform>();
+    for (auto &e : m_entityManager.getEntities("missle"))
+    {
+        Vec2 direction = playerPos.pos - e->getComponent<CTransform>().pos;
+
+        float velLength = sqrtf(playerPos.velocity.x * playerPos.velocity.x + playerPos.velocity.y * playerPos.velocity.y);
+        
+        Vec2 desired = Vec2((direction.x / playerPos.pos.dist(e->getComponent<CTransform>().pos)),
+                            (direction.y / playerPos.pos.dist(e->getComponent<CTransform>().pos)));
+        
+        //how fast missles will travel
+        int speed;
+        desired*= speed;
+        Vec2 steering = desired - e->getComponent<CTransform>().velocity;
+
+        //amount of steering, higher number stronger steering
+        //0 < scale < 1
+        float scale = 0.02;
+        steering *= scale;
+        std::cout << sqrtf(steering.x * steering.x + steering.y * steering.y) << "\n";
+        
+        e->getComponent<CTransform>().velocity += steering;
+        
     }
 
     for (auto e : m_entityManager.getEntities())
@@ -277,6 +312,10 @@ void Scene_EA::sDoAction(const Action &action)
         else if (action.name() == "MOUSE_MOVE")
         {
             m_player->getComponent<CInput>().mousePos = window2World(action.pos());
+        }
+        else if (action.name() == "RIGHT_CLICK")
+        {
+            spawnMissle(window2World(action.pos()));
         }
     }
     else if (action.type() == "END")
@@ -607,12 +646,12 @@ void Scene_EA::sAnimation()
     if (m_player->getComponent<CInput>().mousePos.y < m_player->getComponent<CTransform>().pos.y)
     {
         float mouseAngle = -atan(direction.x / direction.y) * 180 / 3.14;
-        m_player->getComponent<CTransform>().angle = mouseAngle;
+        m_player->getComponent<CTransform>().angle = mouseAngle +180;
     }
     else
     {
         float mouseAngle = -atan(direction.x / direction.y) * 180 / 3.14;
-        m_player->getComponent<CTransform>().angle = mouseAngle + 180;
+        m_player->getComponent<CTransform>().angle = mouseAngle;
     }
 
     // if (playerTransform.facing.x == 1.0f) // If the plaer is facing left

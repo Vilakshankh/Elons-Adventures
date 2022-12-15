@@ -126,7 +126,7 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
             player->addComponent<CAnimation>(m_game->assets().getAnimation("StandDown"), true);
             player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), false, false);
             player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
-            player->addComponent<CDraggable>(); 
+            player->addComponent<CDraggable>();
         }
     }
     spawnPlayer();
@@ -273,7 +273,7 @@ void Scene_LevelEditor::update()
 
         // sAI();
         sMovement();
-        // sStatus();
+        sStatus();
         // sCollision();
         // sAnimation();
         sCamera();
@@ -475,6 +475,25 @@ void Scene_LevelEditor::sDoAction(const Action& action)
             e->getComponent<CDraggable>().dragging = !e->getComponent<CDraggable>().dragging;
         }
 
+        else if (action.name() == "RIGHT_CLICK")
+        {
+            for (auto& e : m_entityManager.getEntities())
+            {
+                if (e->hasComponent<CSelected>())
+                {
+                    e->removeComponent<CSelected>();
+
+                    m_selected.setRadius(1);
+                    m_selected.setOrigin(1, 1);
+                }
+
+                if (isInside(window2World(action.pos()), e))
+                {
+                    e->addComponent<CSelected>();
+                }
+            }                
+        }
+
 
     }
     else if (action.type() == "END")
@@ -565,37 +584,17 @@ void Scene_LevelEditor::sStatus()
 
     for (auto e : m_entityManager.getEntities())
     {
-        // Decrement LifeSpan, destroy entity once lifespan is over
-        if (e->hasComponent<CLifeSpan>())
+        if (e->hasComponent<CSelected>())
         {
-            if ((e->getComponent<CLifeSpan>().lifespan) > 0 && e->isActive())
-            {
-                e->getComponent<CLifeSpan>().lifespan -= 1;
-            }
-            else
-            {
-                if (e->tag() == "sword")
-                {
-                    m_player->getComponent<CInput>().attack = false;
-                }
-                e->destroy();
-            }
-        }
-        // Decrement Invincibility, removed after 30 frames
-        if (e->hasComponent<CInvincibility>())
-        {
-            if (e->getComponent<CInvincibility>().iframes > 0)
-            {
-                e->getComponent<CInvincibility>().iframes -= 1;
-            }
-            else
-            {
-                e->removeComponent<CInvincibility>();
-            }
+            Vec2 pos = e->getComponent<CTransform>().pos;
+            m_selected.setPosition(pos.x, pos.y);
+
+            m_selected.setRadius(32);
+            m_selected.setOrigin(32, 32);
         }
     }
 }
-
+    
 void Scene_LevelEditor::sCollision()
 {
     for (auto tile : m_entityManager.getEntities("tile"))
@@ -869,6 +868,9 @@ void Scene_LevelEditor::sRender()
     m_mouseShape.setOrigin(2, 2);
     m_game->window().draw(m_mouseShape);
 
+    m_selected.setFillColor(sf::Color(255, 0, 0));
+    m_game->window().draw(m_selected);
+
     // draw all Entity collision bounding boxes with a rectangleshape
     if (m_drawCollision)
     {
@@ -931,6 +933,10 @@ void Scene_LevelEditor::sRender()
             }
         }
     }
+
+    //Draw UI
+
+
 }
 
 //Saving file

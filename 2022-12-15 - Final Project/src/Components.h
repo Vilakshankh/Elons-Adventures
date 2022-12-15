@@ -119,6 +119,17 @@ public:
         : size(s), blockMove(m), blockVision(v), halfSize(s.x / 2, s.y / 2) {}
 };
 
+class CSelected : public Component
+{
+public:
+    bool real = false;
+    CSelected() {}
+    CSelected(bool r)
+        :real(r) {}
+};
+
+
+
 class CAnimation : public Component
 {
 public:

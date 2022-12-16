@@ -48,7 +48,17 @@ void Scene_EA::init(const std::string &levelPath)
     shaderFade.loadFromFile("shaders/shader_fade.frag", sf::Shader::Fragment);
     shaderRed.loadFromFile("shaders/shader_red.frag", sf::Shader::Fragment);
     shaderShake.loadFromFile("shaders/shader_shake.frag", sf::Shader::Fragment);
-    // shaderFrag.loadFromFile("shaders/vertex_shader.vert", "shaders/fragment_shader.frag");
+    // load both shaders
+    if (!shaderFrag.loadFromFile("shaders/vertex_shader.vert", "shaders/fragment_shader.frag"))
+    {
+        std::cout << "Error loading shader" << std::endl;
+    }
+
+    background.loadFromFile("images/EA/background.png");
+    backgroundSprite.setTexture(background);
+    backgroundSprite.setScale(2, 2);
+    // // center the sprite
+    backgroundSprite.setPosition(m_game->window().getSize().x / 2, m_game->window().getSize().y / 2);
 }
 
 void Scene_EA::loadLevel(const std::string &filename)
@@ -194,10 +204,10 @@ void Scene_EA::update()
         sCollision();
         sAnimation();
         sCamera();
-        shaderFade.setUniform("time", m_game->time.getElapsedTime().asSeconds());
-        // shaderFrag.setUniform("hasTexture", true);
-        // sf::Vector2f lightPos = sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
-        // shaderFrag.setUniform("lightPos", lightPos);
+        // shaderFade.setUniform("time", m_game->time.getElapsedTime().asSeconds());
+        shaderFrag.setUniform("hasTexture", true);
+        sf::Vector2f lightPos = sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
+        shaderFrag.setUniform("lightPos", lightPos);
 
         m_currentFrame++;
     }
@@ -681,35 +691,6 @@ void Scene_EA::onEnd()
 
 void Scene_EA::sRender()
 {
-    // RENDERING DONE FOR YOU
-    // sf::Texture background;
-    // background.loadFromFile("images/EA/background.png");
-    // sf::Sprite backgroundSprite;
-    // backgroundSprite.setTexture(background);
-    // // center the sprite
-    // backgroundSprite.setPosition(m_game->window().getSize().x / 2, m_game->window().getSize().y / 2);
-    // sf::Texture lightTexture;
-    // lightTexture.loadFromFile("images/EA/light.png");
-    // sf::Sprite light;
-    // light.setTexture(lightTexture);
-    // sf::RenderTexture target;
-    // sf::Sprite darkness;
-
-    // light.setColor(sf::Color(0, 0, 0, 0));
-    // light.setPosition(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
-    // // sf::RenderTexture target = sf::RenderTexture::create(m_game->window().getSize().x, m_game->window().getSize().y, false);
-    // target.create(m_game->window().getSize().x, m_game->window().getSize().y, false);
-    // target.clear(sf::Color(255, 255, 255, 200));
-    // target.draw(light, sf::BlendMultiply);
-    // target.display();
-
-    // m_game->window().clear(sf::Color(0, 150, 255, 255));
-    // m_game->window().draw(backgroundSprite);
-    // darkness.setTexture(target.getTexture());
-
-    // m_game->window().draw(darkness, sf::BlendAdd);
-    // m_game->window().display();
-
     m_game->window().clear(sf::Color(189, 44, 11));
     sf::RectangleShape tick({1.0f, 6.0f});
     tick.setFillColor(sf::Color::Black);
@@ -733,9 +714,13 @@ void Scene_EA::sRender()
                 animation.getSprite().setPosition(transform.pos.x, transform.pos.y);
                 animation.getSprite().setScale(transform.scale.x, transform.scale.y);
                 animation.getSprite().setColor(c);
+
+                // draws the background
+                m_game->window().draw(backgroundSprite, &shaderFrag);
+
                 if (e->hasComponent<CShader>())
                 {
-                    m_game->window().draw(animation.getSprite(), &shaderFade);
+                    m_game->window().draw(animation.getSprite(), &shaderFrag);
                 }
                 else
                 {

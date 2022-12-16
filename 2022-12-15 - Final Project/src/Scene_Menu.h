@@ -42,7 +42,17 @@ protected:
 public:
     std::shared_ptr<Entity> planetEarth;
     std::shared_ptr<Entity> planetMars;
-    std::shared_ptr<Entity> galaxy;
+
+    std::shared_ptr<Entity> galaxyL1;
+    std::shared_ptr<Entity> galaxyL2;
+    std::shared_ptr<Entity> galaxyL3;
+    std::shared_ptr<Entity> galaxyL4;
+    std::shared_ptr<Entity> galaxyL5;
+    std::shared_ptr<Entity> galaxyOverlay;
+    
+    
+    float mousePosX;
+    float mousePosY;
     Scene_Menu(GameEngine * gameEngine = nullptr);
     void sRender();
 

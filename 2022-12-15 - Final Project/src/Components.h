@@ -18,6 +18,7 @@
 #include "Animation.h"
 #include "Assets.h"
 
+
 class Component
 {
 public:
@@ -178,6 +179,19 @@ public:
     float speed = 0;
     CPatrol() {}
     CPatrol(std::vector<Vec2> &pos, float s) : positions(pos), speed(s) {}
+};
+
+class CParallax : public Component
+{
+public: 
+    
+    std::string direction = "forward";
+
+    
+    float speed = 0;
+    CParallax() {}
+
+    CParallax(const std::string& fb, float speed) : direction(fb), speed(speed) {}
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

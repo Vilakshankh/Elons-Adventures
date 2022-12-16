@@ -38,6 +38,9 @@ void Scene_Menu::init()
     registerAction(sf::Keyboard::D, "SELECT");
     registerAction(sf::Keyboard::Escape, "QUIT");
 
+
+
+    //menu items
     m_title = "Elon's Adventure";
 
     m_menuStrings.push_back("Play/Continue");
@@ -58,6 +61,16 @@ void Scene_Menu::init()
     m_menuText.setCharacterSize(64);
 
     m_game->playSound("MusicTitle");
+
+
+    //planets and galaxies
+    planetEarth = m_entityManager.addEntity("planetEarth");
+    planetEarth->addComponent<CAnimation>(m_game->assets().getAnimation("PlanetEarth"), true);
+    planetMars = m_entityManager.addEntity("planetMars");
+    planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet1"), true);
+    galaxy = m_entityManager.addEntity("galaxy");
+    galaxy->addComponent<CAnimation>(m_game->assets().getAnimation("Galaxy"), true);
+
 }
 
 void Scene_Menu::update()
@@ -127,9 +140,51 @@ void Scene_Menu::sDoAction(const Action &action)
 
 void Scene_Menu::sRender()
 {
+    
     // clear the window to a blue
     m_game->window().setView(m_game->window().getDefaultView());
     m_game->window().clear(sf::Color(0, 0, 0));
+
+    //draw planets and galaxy
+    for (auto e : m_entityManager.getEntities())
+    {
+        if (e->hasComponent<CAnimation>())
+        {
+            auto& animation = e->getComponent<CAnimation>().animation;
+            if (e->tag() == "galaxy")
+            {
+                animation.getSprite().setPosition(800, 300);
+                animation.getSprite().setScale(1.7, 1.7);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+        }
+    }
+
+    for (auto e : m_entityManager.getEntities())
+    {
+
+        if (e->hasComponent<CAnimation>())
+        {
+            auto& animation = e->getComponent<CAnimation>().animation;
+            if (e->tag() == "planetEarth")
+            {
+                animation.getSprite().setPosition(1000, 400);
+                //animation.getSprite().setScale(1, 1);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+            if (e->tag() == "planetMars")
+            {
+                animation.getSprite().setPosition(800, 300);
+                animation.getSprite().setScale(0.2, 0.2);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+
+
+        }
+    }
 
     // draw the game title in the top-left of the screen
     m_menuText.setCharacterSize(48);
@@ -155,6 +210,8 @@ void Scene_Menu::sRender()
     m_menuText.setString("Up: W     Down: S    Select: D      Back: ESC");
     m_menuText.setPosition(sf::Vector2f(200, 700));
     m_game->window().draw(m_menuText);
+
+    
 }
 
 void Scene_Menu::onEnd()

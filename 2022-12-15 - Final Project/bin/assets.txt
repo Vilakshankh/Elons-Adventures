@@ -52,6 +52,21 @@ Texture   TexPlayerDeath images/EA/player/player_death_spritesheet.png
 Texture   TexFinalBoss images/EA/monster-character-sprites/boss/walk_spritesheet.png
 
 
+Texture	TexPlanet1	images/EA/planet_level1.png
+Texture	TexPlanet2	images/EA/planet_level2.png
+Texture	TexPlanet3	images/EA/planet_level3.png
+Texture	TexPlanetEarth	images/EA/planet_earth.png
+Texture	TexGalaxy		images/EA/galaxy_dark.png
+
+
+
+Animation	Planet1	TexPlanet1	50	6
+Animation	Planet2	TexPlanet2	50	6
+Animation	Planet3	TexPlanet3	50	6
+Animation	PlanetEarth	TexPlanetEarth	72	5
+Animation	Galaxy		TexGalaxy	1	0
+
+
 
 Animation Stand		TexStand	1    0
 Animation Rock		TexRock		1    0

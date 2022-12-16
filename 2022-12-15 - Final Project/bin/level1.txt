@@ -1,45 +1,69 @@
-Tile Rock   0  0  1 1
-Tile Rock   0  1  1 1
-Tile Rock   0  2  1 1
-Tile Rock   0  3  1 1
-Tile Rock   0  4  1 1
-Tile Rock   0  5  1 1
-Tile Rock   0  6  1 1
-Tile Rock   0  7  1 1
-Tile Rock   0  8  1 1
-Tile Rock   0  9  1 1
-Tile Rock   0  10  1 1
-Tile Rock   0  11  1 1
-Tile Rock   0  12  1 1
-Tile Rock   0  13  1 1
-Tile Rock   0  14  1 1
-Tile Rock   0  15  1 1
-Tile Rock   0  16  1 1
-Tile Rock   1  0  1 1
-Tile Rock   2  0  1 1
-Tile Rock   3  0  1 1
-Tile Rock   4  0  1 1
-Tile Rock   5  0  1 1
-Tile Rock   6  0  1 1
-Tile Rock   7  0  1 1
-Tile Rock   8  0  1 1
-Tile Rock   9  0  1 1
-Tile Rock   10  0  1 1
-Tile Rock   11  0  1 1
-Tile Rock   12  0  1 1
-Tile Rock   13  0  1 1
-Tile Rock   14  0  1 1
-Tile Rock   15  0  1 1
-Tile Rock   16  0  1 1
-
-
-Tile Health 12  12  0 0
-Tile Armour 14  14  0 0
-
-Tile Metal  16  16  0 0
-Tile Metal  16  18  0 0
-Tile DMGup  16  14  0 0
-
-NPC Boss   6    6  0 0 2 2 2
-
-Player 640 360 48 48 5 3
+Tile Health   0  0 20 0 0 0
+Tile Armour   0  0 5 15 0 0
+Tile Metal   0  0 6 8 0 0
+Tile Metal   0  0 18 5 0 0
+Tile DMGup   0  0 5 3 0 0
+Tile Rock   0  0 5 4 1 1
+Tile DMGup   0  0 35 1 1 1
+Tile Metal   0  0 17 18 1 1
+Tile Armour   0  0 21 2 1 1
+Tile Health   0  0 21 20 1 1
+Tile Rock   0  0 6 3 1 1
+Tile Rock   0  0 15 2 1 1
+Tile Rock   0  0 19 4 1 1
+Tile Rock   0  0 16 3 1 1
+Tile Rock   0  0 17 3 1 1
+Tile Rock   0  0 16 2 1 1
+Tile Rock   0  0 18 3 1 1
+Tile Rock   0  0 18 4 1 1
+Tile Rock   0  0 15 1 1 1
+Tile Rock   0  0 15 0 1 1
+Tile Rock   0  0 7 7 1 1
+Tile Rock   0  0 8 8 1 1
+Tile Rock   0  0 7 8 1 1
+Tile Rock   0  0 7 14 1 1
+Tile Rock   0  0 8 14 1 1
+Tile Rock   0  0 6 13 1 1
+Tile Rock   0  0 5 13 1 1
+Tile Rock   0  0 6 14 1 1
+Tile Rock   0  0 6 0 1 1
+Tile Rock   0  0 5 0 1 1
+Tile Rock   0  0 22 9 1 1
+Tile Rock   0  0 22 10 1 1
+Tile Rock   0  0 22 11 1 1
+Tile Rock   0  0 23 10 1 1
+Tile Rock   0  0 23 9 1 1
+Tile Rock   0  0 23 11 1 1
+Tile Rock   0  0 22 8 1 1
+Tile Rock   0  0 5 18 1 1
+Tile Rock   0  0 8 20 1 1
+Tile Rock   0  0 10 19 1 1
+Tile Rock   0  0 17 21 1 1
+Tile Rock   0  0 19 19 1 1
+Tile Rock   0  0 20 18 1 1
+Tile Rock   0  0 9 19 1 1
+Tile Rock   0  0 11 19 1 1
+Tile Rock   0  0 12 19 1 1
+Tile Rock   0  0 32 0 1 1
+Tile Health   0  0 4 6 1 1
+Tile Rock   0  0 32 1 1 1
+Tile Rock   0  0 33 2 1 1
+Tile Rock   0  0 34 3 1 1
+Tile Rock   0  0 23 12 1 1
+Tile DMGup   0  0 4 3 1 1
+Tile Armour   0  0 4 5 1 1
+Tile Metal   0  0 23 8 1 1
+Tile Rock   0  0 4 2 1 1
+Tile Metal   0  0 4 4 1 1
+NPC Boss   0  0 19 15 0 0 2 Follow 0
+NPC A1   0  0 18 1 1 1 1 Follow 0
+NPC A2   0  0 4 8 1 1 1 Follow 0
+NPC Boss   0  0 4 9 1 1 1 Follow 0
+NPC A1   0  0 13 11 1 1 1 Follow 0
+NPC A1   0  0 10 21 1 1 1 Follow 0
+NPC A1   0  0 27 10 1 1 1 Follow 0
+NPC A1   0  0 4 12 1 1 1 Follow 0
+NPC A1   0  0 28 2 1 1 1 Follow 0
+NPC A1   0  0 35 2 1 1 1 Follow 0
+NPC A1   0  0 4 7 1 1 1 Follow 0
+Player 672 352 48 48 5 3

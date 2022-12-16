@@ -1,8 +1,11 @@
-Tile Rock
-NPC Bat
-NPC Worm
-NPC Running
-Tile Black
-NPC Knight
-NPC Tektite
-Tile Heart
+Tile	Rock
+Tile	DMGup	
+Tile	Metal	
+Tile	Armour	
+Tile	Health	
+
+
+NPC	A1
+NPC	A2
+NPC	Boss	
+

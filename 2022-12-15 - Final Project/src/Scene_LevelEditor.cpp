@@ -84,7 +84,7 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
         if (label == "NPC")
         {
             // removed room x and Y temporarily
-            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
+            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> nSpeed;
 
             // Checks type of AI
             auto npc = m_entityManager.addEntity("npc");
@@ -123,7 +123,7 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
 
             auto player = m_entityManager.addEntity("playerEditor");
             player->addComponent<CTransform>(Vec2(m_playerConfig.X, m_playerConfig.Y));
-            player->addComponent<CAnimation>(m_game->assets().getAnimation("StandDown"), true);
+            player->addComponent<CAnimation>(m_game->assets().getAnimation("IdleKnife"), true);
             player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), false, false);
             player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
             player->addComponent<CDraggable>();
@@ -171,13 +171,9 @@ void Scene_LevelEditor::snap2Grid(std::shared_ptr<Entity> &e)
     {
         if (a->id() != e->id())
         {
-            std::cout << "tag : " << a->tag() << "\n"
-                      << "Check pos :" << int(a->getComponent<CTransform>().pos.x / 64) << ", " << int(a->getComponent<CTransform>().pos.y / 64) << "\n"
-                      << "Snapp pos :" << int(e->getComponent<CTransform>().pos.x / 64) << ", " << int(e->getComponent<CTransform>().pos.y / 64) << "\n";
             Vec2 drop = Vec2((int(a->getComponent<CTransform>().pos.x / 64) * 64 + 32), (int(a->getComponent<CTransform>().pos.y / 64) * 64 + 32));
             if (drop == place)
             {
-                std::cout << "reqursive call: " << e->getComponent<CTransform>().pos.x << "\n";
                 e->getComponent<CTransform>().pos.x += 64;
                 snap2Grid(e);
             }
@@ -938,7 +934,7 @@ void Scene_LevelEditor::sRender()
 void Scene_LevelEditor::saveLevel() // const std::string& filename
 {
     std::ofstream fout;
-    fout.open("test.txt");
+    fout.open("EditorOutput.txt");
 
     for (auto e : m_entityManager.getEntities("tile"))
     {

@@ -96,6 +96,12 @@ Texture	  TexMetal	images/EA/Items/object_0021_box.png
 Texture   TexDMGup	images/EA/Items/items_0000_gun.png
 Texture	TexGalaxy	images/EA/galaxy_dark.png
 
+Texture TexA1		images/EA/monster-character-sprites/enemy_1/walk_spritesheet.png
+Texture TexA2		images/EA/monster-character-sprites/enemy_2/walk_spritesheet.png
+
+Animation A1	TexA1	9	10
+Animation A2	TexA2	9	10
+
 
 Animation	DMGup	TexDMGup	1	0
 Animation	Metal	TexMetal	1	0

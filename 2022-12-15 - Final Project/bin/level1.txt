@@ -40,6 +40,6 @@ Tile Metal  16  16  0 0
 Tile Metal  16  18  0 0
 Tile DMGup  16  14  0 0
 
-NPC Boss   6    6  1 0 2 2 2
+NPC Boss   6    6  0 0 2 2 2
 
 Player 640 360 48 48 5 3

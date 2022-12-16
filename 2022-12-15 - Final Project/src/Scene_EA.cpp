@@ -198,16 +198,14 @@ void Scene_EA::spawnBullet(std::shared_ptr<Entity> entity)
 
     float angle = m_player->getComponent<CTransform>().angle + 90;
     int bulletSpeed = 25;
-    Vec2 velocity = Vec2(cosf((angle)*3.14 / 180) * bulletSpeed, sinf((angle)*3.14 / 180) * bulletSpeed);
+    Vec2 velocity = Vec2(cosf((angle) * 3.14 / 180) * bulletSpeed, sinf((angle) * 3.14 / 180) * bulletSpeed);
 
     // gives the bullet its components
-    weapon->addComponent<CTransform>(entity->getComponent<CTransform>().pos, velocity, Vec2(1.0f, 1.0f), angle);
+    weapon->addComponent<CTransform>(entity->getComponent<CTransform>().pos + Vec2((cosf((angle) * 3.14 / 180) * 50), (sinf((angle) * 3.14 / 180) * 50) - 12), velocity, Vec2(1.0f, 1.0f), angle);
     weapon->addComponent<CBoundingBox>(Vec2(15, 15));
-    weapon->addComponent<CDamage>(1);
+    weapon->addComponent<CDamage>(m_player->getComponent<CDamage>().damage);
     weapon->addComponent<CLifeSpan>(60, m_currentFrame);
 
-    // shooting is cooldown 1
-    m_player->addComponent<CCooldown>(10);
 }
 
 void Scene_EA::spawnGravityBomb(std::shared_ptr<Entity> entity)
@@ -224,24 +222,22 @@ void Scene_EA::spawnGravityBomb(std::shared_ptr<Entity> entity)
 
 void Scene_EA::spawnFlame(std::shared_ptr<Entity> entity)
 {
-    // ADD CODE AND CONDITION TO USE FULE
-    // FIXd
-    // auto weapon = m_entityManager.addEntity("weapon");
-    // weapon->addComponent<CAnimation>(m_game->assets().getAnimation("Flame"), true);
+    auto weapon = m_entityManager.addEntity("weapon");
+    weapon->addComponent<CAnimation>(m_game->assets().getAnimation("Flame"), true);
 
-    //
-    //// determins bullet direction from current direction imput
 
-    // float angle = m_player->getComponent<CTransform>().angle + 90;
-    // int flameSpeed = 1;
-    // Vec2 velocity = Vec2(cosf((angle) * 3.14 / 180) * flameSpeed, sinf((angle) * 3.14 / 180) * flameSpeed);
+    // determins bullet direction from current direction imput
 
-    //// gives the bullet its components
-    // Vec2 placeing = (entity->getComponent<CTransform>().pos + Vec2(cosf((angle) * 3.14 / 180), (sinf((angle) * 3.14 / 180))));
-    // weapon->addComponent<CTransform>(placeing, velocity, Vec2(1.0f, 1.0f), angle-90);
-    // weapon->addComponent<CBoundingBox>(Vec2(32, 32));
-    // weapon->addComponent<CDamage>(1);
-    // weapon->addComponent<CLifeSpan>(10, m_currentFrame);
+    float angle = m_player->getComponent<CTransform>().angle + 90;
+    int flameSpeed = 1;
+    Vec2 velocity = Vec2(cosf((angle) * 3.14 / 180) * flameSpeed, sinf((angle) * 3.14 / 180) * flameSpeed);
+
+    // gives the bullet its components
+    Vec2 placeing = (entity->getComponent<CTransform>().pos + Vec2((cosf((angle) * 3.14 / 180) * 50), (sinf((angle) * 3.14 / 180) * 50) - 12));
+    weapon->addComponent<CTransform>(placeing, velocity, Vec2(1.0f, 1.0f), angle - 90);
+    weapon->addComponent<CBoundingBox>(Vec2(32, 32));
+    weapon->addComponent<CDamage>(m_player->getComponent<CDamage>().damage);
+    weapon->addComponent<CLifeSpan>(10, m_currentFrame);
 }
 
 void Scene_EA::spawnGravity(std::shared_ptr<Entity> entity)
@@ -784,23 +780,6 @@ void Scene_EA::sCollision()
                 m_game->assets().getSound("GetItem").play();
             }
 
-            // condition for collision with black tile
-            // FIX
-            if (tile->getComponent<CAnimation>().animation.getName() == "Black")
-            {
-                std::vector<std::shared_ptr<Entity>> blackTiles;
-
-                for (auto &b : m_entityManager.getEntities("tile"))
-                {
-                    if (b->getComponent<CAnimation>().animation.getName() == "Black" && (b->id() != tile->id()))
-                    {
-                        blackTiles.push_back(b);
-                    }
-                }
-
-                m_player->getComponent<CTransform>().pos = blackTiles[rand() % blackTiles.size()]->getComponent<CTransform>().pos + Vec2(0, 80);
-            }
-
             if (prevOverlap2.y > 0 && tile->getComponent<CBoundingBox>().blockMove) // Case for horizontal overlap
             {
                 if (m_player->getComponent<CTransform>().pos.x < tile->getComponent<CTransform>().pos.x)
@@ -829,7 +808,7 @@ void Scene_EA::sCollision()
         }
     }
 
-    for (auto &npc : m_entityManager.getEntities("npc"))
+    for (auto& npc : m_entityManager.getEntities("npc"))
     {
         // player collision with npc
         Vec2 overlap = Physics::GetOverlap(m_player, npc);
@@ -854,34 +833,34 @@ void Scene_EA::sCollision()
                     m_game->assets().getSound("LinkHurt").play();
                 }
             }
-
-            // sword collision with npc
-            for (auto &weapon : m_entityManager.getEntities("weapon"))
+            
+        }
+        // weapon collision with npc
+        for (auto weapon : m_entityManager.getEntities("weapon"))
+        {
+            std::cout << "weapons";
+            if (weapon->hasComponent<CDamage>())
             {
-                if (weapon->hasComponent<CDamage>())
+                Vec2 overlap = Physics::GetOverlap(npc, weapon);
+                if (overlap.x > 0 && overlap.y > 0)
                 {
-                    Vec2 overlap = Physics::GetOverlap(npc, weapon);
-                    if (overlap.x > 0 && overlap.y > 0)
+                    npc->getComponent<CHealth>().current -= weapon->getComponent<CDamage>().damage;
+                    if (weapon->getComponent<CAnimation>().animation.getName() == "Bullet")
                     {
+                        weapon->destroy();
+                    }
+                    else
+                    {
+                        weapon->removeComponent<CDamage>();
+                        weapon->removeComponent<CBoundingBox>();
+                    }
 
-                        npc->getComponent<CHealth>().current -= weapon->getComponent<CDamage>().damage;
-                        if (weapon->getComponent<CAnimation>().animation.getName() == "Bullet")
-                        {
-                            weapon->destroy();
-                        }
-                        else
-                        {
-                            weapon->removeComponent<CDamage>();
-                            weapon->removeComponent<CBoundingBox>();
-                        }
+                    m_game->assets().getSound("EnemyHit").play();
 
-                        m_game->assets().getSound("EnemyHit").play();
-
-                        if (npc->getComponent<CHealth>().current <= 0)
-                        {
-                            m_game->assets().getSound("EnemyDie").play();
-                            npc->destroy();
-                        }
+                    if (npc->getComponent<CHealth>().current <= 0)
+                    {
+                        m_game->assets().getSound("EnemyDie").play();
+                        npc->destroy();
                     }
                 }
             }

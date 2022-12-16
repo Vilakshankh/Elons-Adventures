@@ -47,13 +47,30 @@ Texture   TexRock	images/EA/rock.png
 Texture   TexStand	images/EA/astro_stand.png
 Texture   TexWalkKnife	images/EA/player/player_walk_knife_spritesheet.png
 Texture   TexIdleKnife	images/EA/player/player_idle_knife_spritesheet.png
+Texture   TexIdleBat	images/EA/player/player_idle_bat_spritesheet.png
+Texture   TexIdleGun	images/EA/player/player_idle_gun_spritesheet.png
+Texture   TexIdleFlame	images/EA/player/player_idle_flamethrower_spritesheet.png
+
+Texture   TexWalkGun	images/EA/player/player_walk_gun_spritesheet.png
+Texture   TexWalkFlame	images/EA/player/player_walk_flamethrower_spritesheet.png
+Texture   TexWalkBat	images/EA/player/player_walk_bat_spritesheet.png
+
+
 Texture   TexKnifeAttack images/EA/player/player_knife_attack_spritesheet.png
 Texture   TexBatAttack 	images/EA/player/player_bat_spritesheet.png
+
+
 Texture   TexPlayerDeath images/EA/player/player_death_spritesheet.png
 Texture   TexFinalBoss 	images/EA/monster-character-sprites/boss/walk_spritesheet.png
 Texture	  TexBarrel	images/EA/Items/objects_outside_0013_Layer-14.png
 Texture   TexBullet 	images/EA/player/bullet.png
 Texture   TexFlame	images/EA/Explosion/flame.png
+Texture	  TexHealth	images/EA/Items/items_0005_health.png
+Texture	  TexArmour	images/EA/Items/items_0008_superpower.png
+Texture	  TexMetal	images/EA/Items/object_0021_box.png
+Texture   TexDMGup	images/EA/Items/items_0000_gun.png
+
+
 
 Texture	TexGalaxyL1	images/EA/parallax/Layer1.png
 Texture	TexGalaxyL2	images/EA/parallax/Layer2.png
@@ -68,6 +85,24 @@ Texture	TexPlanet3	images/EA/planet_level3.png
 Texture	TexPlanetEarth	images/EA/planet_earth.png
 Texture	TexGalaxy	images/EA/galaxy_dark.png
 
+Animation	BatWalk	TexWalkBat	6	10
+Animation	GunWalk	TexWalkGun	6	10
+Animation	FlameWalk TexWalkFlame	6	10
+
+Animation	FlameIdle TexIdleFlame	8	10
+Animation	GunIdle	TexIdleGun	8	10
+Animation	BatIdle	TexIdleBat	8	10
+
+Animation WalkKnife	TexWalkKnife 6    10
+Animation IdleKnife	TexIdleKnife 8    10
+Animation KnifeAttack	TexKnifeAttack 8    1
+Animation BatAttack	TexBatAttack 12    2
+Animation PlayerDeath	TexPlayerDeath 6    10
+
+Animation	DMGup	TexDMGup	1	0
+Animation	Metal	TexMetal	1	0
+Animation	Armour	TexArmour	1	0
+Animation	Health	TexHealth	1	0
 Animation 	Flame	TexFlame	6	4
 Animation	Bullet	TexBullet	1	0
 Animation	Barrel	TexBarrel	1	0
@@ -95,11 +130,6 @@ Animation Infared	TexAlienIn	1    0
 Animation Bat		TexAlienBat	1    0
 Animation Bug		TexAlienBug	1    0
 Animation Humanoid	TexAlienHum	1    0
-Animation WalkKnife	TexWalkKnife 6    10
-Animation IdleKnife	TexIdleKnife 8    10
-Animation KnifeAttack	TexKnifeAttack 8    1
-Animation BatAttack	TexBatAttack 12    2
-Animation PlayerDeath	TexPlayerDeath 6    10
 Animation Boss	TexFinalBoss 8    10
 
 

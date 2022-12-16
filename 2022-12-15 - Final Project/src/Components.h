@@ -18,7 +18,6 @@
 #include "Animation.h"
 #include "Assets.h"
 
-
 class Component
 {
 public:
@@ -129,7 +128,7 @@ public:
     bool real = false;
     CSelected() {}
     CSelected(bool r)
-        :real(r) {}
+        : real(r) {}
 };
 
 class CGravity : public Component
@@ -138,27 +137,16 @@ public:
     sf::CircleShape circle;
     CGravity() {}
     CGravity(sf::CircleShape &circle)
-        :circle(circle) {}
+        : circle(circle) {}
 };
 
 class CCooldown : public Component
 {
 public:
-    int length1 = 0;
-    int length2 = 0;
+    int length = 0;
     CCooldown() {}
-    CCooldown(int length, int num)
-    {
-        switch (num)
-        {
-        case 1:
-            length1 = length;
-            break;
-        case 2:
-            length2 = length;
-            break;
-        }
-    }
+    CCooldown(int length)
+        : length(length) {}
 };
 
 class CAnimation : public Component
@@ -182,7 +170,7 @@ public:
 class CState : public Component
 {
 public:
-    std::string state = "stand";
+    std::string state = "ONE";
     CState() {}
     CState(const std::string &s) : state(s) {}
 };
@@ -209,15 +197,13 @@ public:
 
 class CParallax : public Component
 {
-public: 
-    
+public:
     std::string direction = "forward";
 
-    
     float speed = 0;
     CParallax() {}
 
-    CParallax(const std::string& fb, float speed) : direction(fb), speed(speed) {}
+    CParallax(const std::string &fb, float speed) : direction(fb), speed(speed) {}
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

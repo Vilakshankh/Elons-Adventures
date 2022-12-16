@@ -75,6 +75,9 @@ public:
     sf::Texture background;
     sf::Sprite backgroundSprite;
 
+    int metalCollected = 0;
+    int metalNeeded = 0;
+
     void sRender();
     void sDoAction(const Action &action);
 };

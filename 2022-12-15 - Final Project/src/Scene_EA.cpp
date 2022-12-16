@@ -46,19 +46,18 @@ void Scene_EA::init(const std::string &levelPath)
 
     // Load the shader
     shaderFade.loadFromFile("shaders/shader_fade.frag", sf::Shader::Fragment);
-    shaderRed.loadFromFile("shaders/shader_red.frag", sf::Shader::Fragment);
     shaderShake.loadFromFile("shaders/shader_shake.frag", sf::Shader::Fragment);
     // load both shaders
-    if (!shaderFrag.loadFromFile("shaders/vertex_shader.vert", "shaders/fragment_shader.frag"))
+    if (!shaderShadow.loadFromFile("shaders/vertex_shader.vert", "shaders/fragment_shader.frag"))
     {
         std::cout << "Error loading shader" << std::endl;
     }
 
-    background.loadFromFile("images/EA/background.png");
+    background.loadFromFile("images/EA/background-large.png");
     backgroundSprite.setTexture(background);
-    backgroundSprite.setScale(2, 2);
+    // backgroundSprite.setScale(2, 2);
     // // center the sprite
-    backgroundSprite.setPosition(m_game->window().getSize().x / 2, m_game->window().getSize().y / 2);
+    backgroundSprite.setPosition(-640, -384);
 }
 
 void Scene_EA::loadLevel(const std::string &filename)
@@ -92,6 +91,7 @@ void Scene_EA::loadLevel(const std::string &filename)
             tile->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
             tile->addComponent<CTransform>(Vec2(tGridX * 64, tGridY * 64));
             tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), bMove, bVision);
+            tile->addComponent<CShader>("shaderShadow");
         }
 
         if (label == "NPC")
@@ -110,6 +110,7 @@ void Scene_EA::loadLevel(const std::string &filename)
             npc->addComponent<CHealth>(nHealth, nHealth);
             npc->addComponent<CDamage>(nDamage);
             npc->addComponent<CFollowPlayer>(Vec2(nGridX * 64, nGridY * 64), nSpeed);
+            npc->addComponent<CShader>("shaderShadow");
         }
         /*if (label == "Boss")
         {
@@ -149,7 +150,7 @@ void Scene_EA::spawnPlayer()
     m_player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), true, false);
     m_player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
     m_player->addComponent<CInput>();
-    m_player->addComponent<CShader>("shaders/fragment_shader.frag");
+    m_player->addComponent<CShader>("shaderFade");
 }
 
 void Scene_EA::spawnMissle(Vec2 position)
@@ -204,10 +205,12 @@ void Scene_EA::update()
         sCollision();
         sAnimation();
         sCamera();
-        // shaderFade.setUniform("time", m_game->time.getElapsedTime().asSeconds());
-        shaderFrag.setUniform("hasTexture", true);
+
+        shaderShake.setUniform("time", m_game->time.getElapsedTime().asSeconds());
+        shaderFade.setUniform("time", m_game->time.getElapsedTime().asSeconds());
+        shaderShadow.setUniform("hasTexture", true);
         sf::Vector2f lightPos = sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
-        shaderFrag.setUniform("lightPos", lightPos);
+        shaderShadow.setUniform("lightPos", lightPos);
 
         m_currentFrame++;
     }
@@ -461,6 +464,25 @@ void Scene_EA::sStatus()
 
 void Scene_EA::sCollision()
 {
+    Vec2 boundCheck = m_player->getComponent<CTransform>().pos;
+    std::cout << boundCheck.x << " " << boundCheck.y << "\n";
+    if (boundCheck.x < 0)
+    {
+        m_player->getComponent<CTransform>().pos.x = 0;
+    }
+    else if (boundCheck.x > 2560)
+    {
+        m_player->getComponent<CTransform>().pos.x = 2560;
+    }
+    else if (boundCheck.y < 0)
+    {
+        m_player->getComponent<CTransform>().pos.y = 0;
+    }
+    else if (boundCheck.y > 1536)
+    {
+        m_player->getComponent<CTransform>().pos.y = 1536;
+    }
+
     for (auto tile : m_entityManager.getEntities("tile"))
     {
         // All NPC colisions with tiles
@@ -695,6 +717,9 @@ void Scene_EA::sRender()
     sf::RectangleShape tick({1.0f, 6.0f});
     tick.setFillColor(sf::Color::Black);
 
+    // draw background
+    m_game->window().draw(backgroundSprite, &shaderShadow);
+
     // draw all Entity textures / animations
     if (m_drawTextures)
     {
@@ -715,13 +740,23 @@ void Scene_EA::sRender()
                 animation.getSprite().setScale(transform.scale.x, transform.scale.y);
                 animation.getSprite().setColor(c);
 
-                // draws the background
-                m_game->window().draw(backgroundSprite, &shaderFrag);
-
+                // draws the elements with their respective shaders
                 if (e->hasComponent<CShader>())
                 {
-                    m_game->window().draw(animation.getSprite(), &shaderFrag);
+                    if (e->getComponent<CShader>().shaderName == "shaderShadow")
+                    {
+                        m_game->window().draw(animation.getSprite(), &shaderShadow);
+                    }
+                    if (e->getComponent<CShader>().shaderName == "shaderFade")
+                    {
+                        m_game->window().draw(animation.getSprite(), &shaderFade);
+                    }
+                    if (e->getComponent<CShader>().shaderName == "shaderShake")
+                    {
+                        m_game->window().draw(animation.getSprite(), &shaderShake);
+                    }
                 }
+
                 else
                 {
                     m_game->window().draw(animation.getSprite());

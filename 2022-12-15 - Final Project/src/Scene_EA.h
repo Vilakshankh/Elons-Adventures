@@ -35,10 +35,9 @@ protected:
     std::shared_ptr<Entity> m_player;
     std::string m_levelPath;
     PlayerConfig m_playerConfig;
-    sf::Shader shaderRed;
     sf::Shader shaderFade;
     sf::Shader shaderShake;
-    sf::Shader shaderFrag;
+    sf::Shader shaderShadow;
 
     bool m_drawTextures = true;
     bool m_drawCollision = false;

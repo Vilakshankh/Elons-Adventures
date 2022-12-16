@@ -40,7 +40,9 @@ protected:
     void sDoAction(const Action& action);
 
 public:
-
+    std::shared_ptr<Entity> planetEarth;
+    std::shared_ptr<Entity> planetMars;
+    std::shared_ptr<Entity> galaxy;
     Scene_Menu(GameEngine * gameEngine = nullptr);
     void sRender();
 

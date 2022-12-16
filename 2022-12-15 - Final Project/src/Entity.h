@@ -20,7 +20,7 @@
 
 class EntityManager;
 
-typedef std::tuple<
+typedef std::tuple <
     CTransform,
     CLifeSpan,
     CInput,
@@ -32,7 +32,8 @@ typedef std::tuple<
     CDamage,
     CHealth,
     CInvincibility,
-    CDraggable
+    CDraggable,
+    CParallax
 > ComponentTuple;
 
 class Entity

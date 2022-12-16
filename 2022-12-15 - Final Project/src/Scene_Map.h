@@ -31,6 +31,10 @@ protected:
     std::vector<std::string> m_menuStrings;
     std::vector<std::string> m_levelPaths;
     sf::Text m_menuText;
+    
+     
+
+    //planet->addComponent<CAnimation>(m_game->assets().getAnimation("Running"), true);
     size_t m_selectedMenuIndex = 0;
 
     void init();
@@ -39,8 +43,11 @@ protected:
     void sDoAction(const Action &action);
 
 public:
+    
+    std::shared_ptr<Entity> planetMars;
+    std::shared_ptr<Entity> galaxy;
     Scene_Map(GameEngine *gameEngine = nullptr);
-    void sRender();
+    void sRender(); 
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

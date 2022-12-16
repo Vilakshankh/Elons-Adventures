@@ -96,8 +96,16 @@ void Assets::addAnimation(const std::string &animationName, const std::string &t
 
 const Animation &Assets::getAnimation(const std::string &animationName) const
 {
-    assert(m_animationMap.find(animationName) != m_animationMap.end());
-    return m_animationMap.at(animationName);
+    // assert(m_animationMap.find(animationName) != m_animationMap.end());
+    if (m_animationMap.find(animationName) != m_animationMap.end())
+    {
+        return m_animationMap.at(animationName);
+    }
+    else
+    {
+        std::cerr << "Could not find animation: " << animationName << std::endl;
+        return m_animationMap.at("WalkKnife");
+    }
 }
 
 void Assets::addFont(const std::string &fontName, const std::string &path)

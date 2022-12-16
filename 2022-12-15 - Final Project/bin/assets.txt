@@ -86,7 +86,15 @@ Texture	TexPlanetEarth	images/EA/planet_earth.png
 Texture	TexInvBox	images/EA/UI/inventory/inventory.png
 Texture	TexHealth	images/EA/Items/healthBox.png
 
+Texture	TexHealth	images/EA/Items/healthBox.png
+Texture	TexHealth	images/EA/Items/healthBox.png
+Texture	TexHealth	images/EA/Items/healthBox.png
+Texture	TexHealth	images/EA/Items/healthBox.png
 
+Texture	  TexArmour	images/EA/Items/items_0008_superpower.png
+Texture	  TexMetal	images/EA/Items/object_0021_box.png
+Texture   TexDMGup	images/EA/Items/items_0000_gun.png
+Texture	TexGalaxy	images/EA/galaxy_dark.png
 
 
 Animation	DMGup	TexDMGup	1	0
@@ -96,6 +104,9 @@ Animation	Health	TexHealth	1	0
 Animation 	Flame	TexFlame	6	4
 Animation	Bullet	TexBullet	1	0
 Animation	Barrel	TexBarrel	1	0
+Animation	BatIdle	TexIdleBat	8	10
+Animation	BatWalk	TexWalkBat	6	10
+
 
 
 

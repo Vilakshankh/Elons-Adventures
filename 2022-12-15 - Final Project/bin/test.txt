@@ -22,7 +22,7 @@ Tile Rock   0  0 3 0 1 1
 Tile Rock   0  0 4 0 1 1
 Tile Rock   0  0 5 0 1 1
 Tile Rock   0  0 6 0 1 1
-Tile Rock   0  0 5 4 1 1
+Tile Rock   0  0 7 0 1 1
 Tile Rock   0  0 8 0 1 1
 Tile Rock   0  0 9 0 1 1
 Tile Rock   0  0 10 0 1 1
@@ -31,13 +31,17 @@ Tile Rock   0  0 12 0 1 1
 Tile Rock   0  0 13 0 1 1
 Tile Rock   0  0 14 0 1 1
 Tile Rock   0  0 15 0 1 1
-Tile Rock   0  0 0 0 1 1
-Tile Black   0  0 0 4 1 1
-Tile Heart   0  0 0 7 1 1
-NPC Bat   0  0 0 1 1 1 1 Follow 0
-NPC Worm   0  0 0 2 1 1 1 Follow 0
-NPC Running   0  0 0 3 1 1 1 Follow 0
-NPC Knight   0  0 7 2 1 1 1 Follow 0
-NPC Tektite   0  0 0 6 1 1 1 Follow 0
-NPC Knight   0  0 0 5 1 1 1 Follow 0
-Player 640 360 48 48 53
+Tile Health   0  0 11 11 0 0
+Tile Armour   0  0 13 13 0 0
+Tile Metal   0  0 15 15 0 0
+Tile Metal   0  0 15 17 0 0
+Tile DMGup   0  0 15 13 0 0
+Tile Rock   0  0 -2147483648 -2147483648 1 1
+Tile Black   0  0 -2147483648 -2147483648 1 1
+Tile Heart   0  0 -2147483648 -2147483648 1 1
+NPC Boss   0  0 -2147483648 -2147483648 1 0 2 Follow 0
+NPC Bat   0  0 -2147483648 -2147483648 1 1 1 Follow 0
+NPC Worm   0  0 -2147483648 -2147483648 1 1 1 Follow 0
+NPC Running   0  0 -2147483648 -2147483648 1 1 1 Follow 0
+NPC Knight   0  0 -2147483648 -2147483648 1 1 1 Follow 0
+NPC Tektite   0  0 -2147483648 -2147483648 1 1 1 Follow 0

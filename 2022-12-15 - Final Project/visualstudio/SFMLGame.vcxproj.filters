@@ -16,6 +16,7 @@
     <ClCompile Include="..\src\Scene_LevelEditor.cpp" />
     <ClCompile Include="..\src\Scene_Map.cpp" />
     <ClCompile Include="..\src\Scene_Volume.cpp" />
+    <ClCompile Include="..\src\Inventory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Assets.h" />
@@ -34,5 +35,6 @@
     <ClInclude Include="..\src\Scene_LevelEditor.h" />
     <ClInclude Include="..\src\Scene_Map.h" />
     <ClInclude Include="..\src\Scene_Volume.h" />
+    <ClInclude Include="..\src\Inventory.h" />
   </ItemGroup>
 </Project>

@@ -199,6 +199,7 @@ void Scene_Menu::sRender()
                 animation.update();
                 m_game->window().draw(animation.getSprite());
             }
+            
             if (e->tag() == "galaxyL1")
             {
                 animation.getSprite().setPosition(640 - (mousePosX / 200), 385 - (mousePosY / 200));

@@ -70,11 +70,13 @@ protected:
     void sCollision();
     void sCamera();
 
+    void Inventory(std::shared_ptr<Entity> entity);
 public:
     Scene_EA(GameEngine *gameEngine, const std::string &levelPath);
 
     sf::Texture background;
     sf::Sprite backgroundSprite;
+    
 
     int metalCollected = 0;
     int metalNeeded = 0;

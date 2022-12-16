@@ -47,6 +47,7 @@ void Scene_EA::init(const std::string &levelPath)
     registerAction(sf::Keyboard::Num2, "TWO");
     registerAction(sf::Keyboard::Num3, "THREE");
 
+    registerAction(sf::Keyboard::I, "INVENTORY");
     // Load the shader
     shaderFade.loadFromFile("shaders/shader_fade.frag", sf::Shader::Fragment);
     shaderShake.loadFromFile("shaders/shader_shake.frag", sf::Shader::Fragment);
@@ -78,7 +79,7 @@ void Scene_EA::loadLevel(const std::string &filename)
     std::string nName, AI;
     float nRoomX, nRoomY, nGridX, nGridY;
     int nMove, nVision, nHealth, nDamage, nSpeed, N, Xi, Yi;
-    std::vector<Vec2> npcPos;
+    
 
     // reset the entity manager every time we load a level
     m_entityManager = EntityManager();
@@ -132,6 +133,33 @@ void Scene_EA::loadLevel(const std::string &filename)
     spawnPlayer();
     m_game->assets().getSound("InGameMusic").play();
 }
+
+void Scene_EA::Inventory(std::shared_ptr<Entity> entity)
+{
+    const int INVENTORY_ROWS = 2;
+    const int INVENTORY_COLUMNS = 3;
+    
+
+    auto invBox = m_entityManager.addEntity("invBox");
+    
+    
+    invBox->addComponent<CAnimation>(m_game->assets().getAnimation("invBox"), true);
+    invBox->addComponent<CTransform>(entity->getComponent<CTransform>().pos+Vec2(100,-200));
+    invBox->getComponent<CAnimation>().animation.getSprite().setScale(0.5, 0.5);
+    
+    
+
+    auto itemHealth = m_entityManager.addEntity("itemHealth");
+    itemHealth->addComponent<CAnimation>(m_game->assets().getAnimation("healthBox"), true);
+
+    entity->getComponent<CInput>().showInv = false;
+
+}
+
+
+
+
+
 
 Vec2 Scene_EA::getPosition(int rx, int ry, int tx, int ty) const
 {
@@ -290,7 +318,16 @@ void Scene_EA::sMovement()
     {
         m_player->getComponent<CTransform>().velocity += Vec2(m_playerConfig.SPEED, 0);
     }
-
+    if (m_player->getComponent<CInput>().showInv)                         // bullet movement
+    {
+        if (m_player->getComponent<CInput>().canShowInv)                  // check if player can shoot
+        {
+            Inventory(m_player);
+        }
+        m_player->getComponent<CInput>().canShowInv = false;              // change player can shoot after firing bullet
+    }
+    
+    
     // code for missle projectile steering
     CTransform playerPos = m_player->getComponent<CTransform>();
     for (auto &e : m_entityManager.getEntities("missle"))
@@ -327,6 +364,13 @@ void Scene_EA::sMovement()
             e->getComponent<CTransform>().pos += playerPos.pos - playerPos.prevPos;
         }
     }
+    for (auto e : m_entityManager.getEntities("invBox"))
+    {
+        // Used specific bounding box size to identify melee attack
+        
+        e->getComponent<CTransform>().pos += playerPos.pos - playerPos.prevPos;
+    }
+
 
     for (auto grav : m_entityManager.getEntities("pull"))
     {
@@ -441,6 +485,11 @@ void Scene_EA::sDoAction(const Action &action)
         {
             m_player->getComponent<CState>().state = "THREE";
         }
+        else if(action.name()=="INVENTORY")
+        {   
+            m_player->getComponent<CInput>().showInv = true;
+            
+        }
     }
     else if (action.type() == "END")
     {
@@ -459,6 +508,15 @@ void Scene_EA::sDoAction(const Action &action)
         else if (action.name() == "RIGHT")
         {
             m_player->getComponent<CInput>().right = false;
+        }
+        else if (action.name() == "INVENTORY")
+        {
+            m_player->getComponent<CInput>().showInv = false;
+            m_player->getComponent<CInput>().canShowInv = true;
+            for (auto e : m_entityManager.getEntities("invBox"))
+            {
+                e->destroy();
+            }
         }
     }
 }

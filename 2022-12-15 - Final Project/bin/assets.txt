@@ -45,6 +45,11 @@ Texture   TexAlienBug	images/EA/alien-bug.png
 Texture   TexAlienHum	images/EA/alien-humanoid.png
 Texture   TexRock	images/EA/rock.png
 Texture   TexStand	images/EA/astro_stand.png
+Texture   TexWalkKnife	images/EA/player/player_walk_knife_spritesheet.png
+Texture   TexIdleKnife	images/EA/player/player_idle_knife_spritesheet.png
+Texture   TexKnifeAttack images/EA/player/player_knife_attack_spritesheet.png
+Texture   TexPlayerDeath images/EA/player/player_death_spritesheet.png
+
 
 Animation Stand		TexStand	1    0
 Animation Rock		TexRock		1    0
@@ -54,6 +59,11 @@ Animation Infared	TexAlienIn	1    0
 Animation Bat		TexAlienBat	1    0
 Animation Bug		TexAlienBug	1    0
 Animation Humanoid	TexAlienHum	1    0
+Animation WalkKnife	TexWalkKnife 6    10
+Animation IdleKnife	TexIdleKnife 8    10
+Animation KnifeAttack	TexKnifeAttack 8    10
+Animation PlayerDeath	TexPlayerDeath 6    10
+
 
 Animation Explosion     TexExplode     48    2 
 Animation RunDown       TexRunDown      2   15   

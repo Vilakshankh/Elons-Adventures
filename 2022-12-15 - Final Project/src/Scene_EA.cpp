@@ -43,6 +43,12 @@ void Scene_EA::init(const std::string &levelPath)
     registerAction(sf::Keyboard::D, "RIGHT");
     registerAction(sf::Keyboard::S, "DOWN");
     registerAction(sf::Keyboard::Space, "ATTACK");
+
+    // Load the shader
+    shaderFade.loadFromFile("shaders/shader_fade.frag", sf::Shader::Fragment);
+    shaderRed.loadFromFile("shaders/shader_red.frag", sf::Shader::Fragment);
+    shaderShake.loadFromFile("shaders/shader_shake.frag", sf::Shader::Fragment);
+    // shaderFrag.loadFromFile("shaders/vertex_shader.vert", "shaders/fragment_shader.frag");
 }
 
 void Scene_EA::loadLevel(const std::string &filename)
@@ -84,7 +90,7 @@ void Scene_EA::loadLevel(const std::string &filename)
 
             // Checks type of AI
             auto npc = m_entityManager.addEntity("npc");
-            
+
             npc->addComponent<CFollowPlayer>(Vec2(nGridX, nGridY), nSpeed);
 
             // Gives npc all remaining components
@@ -133,6 +139,18 @@ void Scene_EA::spawnPlayer()
     m_player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), true, false);
     m_player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
     m_player->addComponent<CInput>();
+    m_player->addComponent<CShader>("shaders/fragment_shader.frag");
+}
+
+void Scene_EA::spawnMissle(Vec2 position)
+{
+    auto missle = m_entityManager.addEntity("missle");
+    missle->addComponent<CTransform>(position);
+    missle->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
+    missle->addComponent<CBoundingBox>(m_game->assets().getAnimation("SwordUp").getSize());
+    missle->addComponent<CDamage>(1);
+    missle->getComponent<CTransform>().velocity = Vec2(0, 10);
+    missle->addComponent<CLifeSpan>(120, m_currentFrame);
 }
 
 void Scene_EA::spawnMissle(Vec2 position)
@@ -187,6 +205,10 @@ void Scene_EA::update()
         sCollision();
         sAnimation();
         sCamera();
+        shaderFade.setUniform("time", m_game->time.getElapsedTime().asSeconds());
+        // shaderFrag.setUniform("hasTexture", true);
+        // sf::Vector2f lightPos = sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
+        // shaderFrag.setUniform("lightPos", lightPos);
 
         m_currentFrame++;
     }
@@ -194,7 +216,7 @@ void Scene_EA::update()
 
 void Scene_EA::sMovement()
 {
-    
+
     m_player->getComponent<CTransform>().velocity = Vec2(0, 0);
     if (m_player->getComponent<CInput>().up)
     {
@@ -218,23 +240,22 @@ void Scene_EA::sMovement()
         Vec2 direction = playerPos.pos - e->getComponent<CTransform>().pos;
 
         float velLength = sqrtf(playerPos.velocity.x * playerPos.velocity.x + playerPos.velocity.y * playerPos.velocity.y);
-        
+
         Vec2 desired = Vec2((direction.x / playerPos.pos.dist(e->getComponent<CTransform>().pos)),
                             (direction.y / playerPos.pos.dist(e->getComponent<CTransform>().pos)));
-        
-        //how fast missles will travel
+
+        // how fast missles will travel
         int speed = 10;
-        desired*= speed;
+        desired *= speed;
         Vec2 steering = desired - e->getComponent<CTransform>().velocity;
 
-        //amount of steering, higher number stronger steering
-        //0 < scale < 1
+        // amount of steering, higher number stronger steering
+        // 0 < scale < 1
         float scale = 0.02;
         steering *= scale;
         std::cout << sqrtf(steering.x * steering.x + steering.y * steering.y) << "\n";
-        
+
         e->getComponent<CTransform>().velocity += steering;
-        
     }
 
     for (auto e : m_entityManager.getEntities())
@@ -346,7 +367,7 @@ void Scene_EA::sAI()
 
     for (auto &e : m_entityManager.getEntities("npc"))
     {
-        
+
         speed = e->getComponent<CFollowPlayer>().speed;
 
         // Checks if npc has line of sight to player
@@ -367,7 +388,6 @@ void Scene_EA::sAI()
         {
             destination = e->getComponent<CFollowPlayer>().home;
         }
-        
 
         // If not within 10pixels of destination, move towards it
         if (destination.dist(e->getComponent<CTransform>().pos) > 10)
@@ -590,7 +610,7 @@ void Scene_EA::sCollision()
     }
 }
 
-Vec2 Scene_EA::window2World(const Vec2& windowPos) const
+Vec2 Scene_EA::window2World(const Vec2 &windowPos) const
 {
     auto view = m_game->window().getView();
 
@@ -612,13 +632,13 @@ void Scene_EA::sAnimation()
     // FIX
     bool input = m_player->getComponent<CInput>().up || m_player->getComponent<CInput>().down || m_player->getComponent<CInput>().left || m_player->getComponent<CInput>().right;
 
-    if (m_player->getComponent<CAnimation>().animation.getName() != "Running" && input)
+    if (m_player->getComponent<CAnimation>().animation.getName() != "WalkKnife" && input)
     {
-        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Running");
+        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("WalkKnife");
     }
-    else if (m_player->getComponent<CAnimation>().animation.getName() != "Stand" && !input)
+    else if (m_player->getComponent<CAnimation>().animation.getName() != "IdleKnife" && !input)
     {
-        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("Stand");
+        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("IdleKnife");
     }
 
     Vec2 direction = m_player->getComponent<CInput>().mousePos.abs() - m_player->getComponent<CTransform>().pos.abs();
@@ -626,134 +646,13 @@ void Scene_EA::sAnimation()
     if (m_player->getComponent<CInput>().mousePos.y < m_player->getComponent<CTransform>().pos.y)
     {
         float mouseAngle = -atan(direction.x / direction.y) * 180 / 3.14;
-        m_player->getComponent<CTransform>().angle = mouseAngle +180;
+        m_player->getComponent<CTransform>().angle = mouseAngle + 180;
     }
     else
     {
         float mouseAngle = -atan(direction.x / direction.y) * 180 / 3.14;
         m_player->getComponent<CTransform>().angle = mouseAngle;
     }
-
-    // if (playerTransform.facing.x == 1.0f) // If the plaer is facing left
-    //{
-    //     m_player->getComponent<CTransform>().scale.x = 1.0;
-    //     // Check input, give animation based off current input
-    //     if (playerInput.attack)
-    //     {
-    //         if (curAnimation != "AtkRight")
-    //         {
-    //             m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkRight");
-    //         }
-    //     }
-    //     else if (playerInput.right)
-    //     {
-    //         if (curAnimation != "RunRight")
-    //         {
-    //             m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunRight");
-    //         }
-    //     }
-    //     else
-    //     {
-    //         m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandRight");
-    //     }
-    // }
-    // else if (playerTransform.facing.x == -1.0f) // If the plaer is facing right
-    //{
-    //     m_player->getComponent<CTransform>().scale.x = -1.0;
-    //     if (playerInput.attack)
-    //     {
-    //         if (curAnimation != "AtkRight")
-    //         {
-    //             m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkRight");
-    //         }
-    //     }
-    //     else if (playerInput.left)
-    //     {
-    //         if (curAnimation != "RunRight")
-    //         {
-    //             m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunRight");
-    //         }
-    //     }
-    //     else
-    //     {
-    //         m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandRight");
-    //     }
-    // }
-    // else if (playerTransform.facing.y == 1.0f) // If the plaer is facing up
-    //{
-
-    //    if (playerInput.attack)
-    //    {
-    //        if (curAnimation != "AtkUp")
-    //        {
-    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkUp");
-    //        }
-    //    }
-    //    else if (playerInput.up)
-    //    {
-    //        if (curAnimation != "RunUp")
-    //        {
-    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunUp");
-    //        }
-    //    }
-    //    else
-    //    {
-    //        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandUp");
-    //    }
-    //}
-    // else // If the plaer is facing down
-    //{
-
-    //    if (playerInput.attack)
-    //    {
-    //        if (curAnimation != "AtkDown")
-    //        {
-    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("AtkDown");
-    //        }
-    //    }
-    //    else if (playerInput.down)
-    //    {
-    //        if (curAnimation != "RunDown")
-    //        {
-    //            m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("RunDown");
-    //        }
-    //    }
-    //    else
-    //    {
-    //        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("StandDown");
-    //    }
-    //}
-
-    //// sword animation/direction
-    // for (auto sword : m_entityManager.getEntities("sword"))
-    //{
-    //     CTransform entityTransform = m_player->getComponent<CTransform>();
-    //     // Swing sword in correct direction
-    //     if (entityTransform.facing.x == 1.0f)
-    //     {
-    //         sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
-    //         sword->getComponent<CTransform>().scale.x = 1.0f;
-    //         sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x + 64, entityTransform.pos.y);
-    //     }
-    //     else if (entityTransform.facing.x == -1.0f)
-    //     {
-    //         sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordRight"), true);
-    //         sword->getComponent<CTransform>().scale.x = -1.0f;
-    //         sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x - 64, entityTransform.pos.y);
-    //     }
-    //     else if (entityTransform.facing.y == 1.0f)
-    //     {
-    //         sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-    //         sword->getComponent<CTransform>().scale.y = 1.0f;
-    //         sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y - 64);
-    //     }
-    //     else
-    //     {
-    //         sword->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-    //         sword->getComponent<CTransform>().scale.y = -1.0f;
-    //         sword->getComponent<CTransform>().pos = Vec2(entityTransform.pos.x, entityTransform.pos.y + 64);
-    //     }
-    // }
 
     // Loops through all entities updating their animation to the next frame
     for (auto e : m_entityManager.getEntities())
@@ -778,38 +677,6 @@ void Scene_EA::sCamera()
 
     newView = sf::View(sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y), sf::Vector2f(1280, 768));
 
-    // if (m_follow) // Follow camera
-    //{
-    //     newView = sf::View(sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y), sf::Vector2f(1280, 768));
-    // }
-    // else // Room camera
-    //{
-
-    //    Vec2 cPos = m_player->getComponent<CTransform>().pos;
-    //    int xRoom, yRoom;
-
-    //    // -100/1280 returns 0, so if x or y is negative -1 to calculate current room
-    //    if (cPos.x < 0)
-    //    {
-    //        xRoom = int(cPos.x / 1280) - 1 * 1280;
-    //    }
-    //    else
-    //    {
-    //        xRoom = int(cPos.x / 1280) * 1280;
-    //    }
-
-    //    if (cPos.y < 0)
-    //    {
-    //        yRoom = int(cPos.y / 768) - 1 * 768;
-    //    }
-    //    else
-    //    {
-    //        yRoom = int(cPos.y / 768) * 768;
-    //    }
-
-    //    newView = sf::View(sf::FloatRect(xRoom, yRoom, 1280, 768));
-    //}
-
     m_game->window().setView(newView);
 }
 
@@ -826,6 +693,33 @@ void Scene_EA::onEnd()
 void Scene_EA::sRender()
 {
     // RENDERING DONE FOR YOU
+    // sf::Texture background;
+    // background.loadFromFile("images/EA/background.png");
+    // sf::Sprite backgroundSprite;
+    // backgroundSprite.setTexture(background);
+    // // center the sprite
+    // backgroundSprite.setPosition(m_game->window().getSize().x / 2, m_game->window().getSize().y / 2);
+    // sf::Texture lightTexture;
+    // lightTexture.loadFromFile("images/EA/light.png");
+    // sf::Sprite light;
+    // light.setTexture(lightTexture);
+    // sf::RenderTexture target;
+    // sf::Sprite darkness;
+
+    // light.setColor(sf::Color(0, 0, 0, 0));
+    // light.setPosition(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
+    // // sf::RenderTexture target = sf::RenderTexture::create(m_game->window().getSize().x, m_game->window().getSize().y, false);
+    // target.create(m_game->window().getSize().x, m_game->window().getSize().y, false);
+    // target.clear(sf::Color(255, 255, 255, 200));
+    // target.draw(light, sf::BlendMultiply);
+    // target.display();
+
+    // m_game->window().clear(sf::Color(0, 150, 255, 255));
+    // m_game->window().draw(backgroundSprite);
+    // darkness.setTexture(target.getTexture());
+
+    // m_game->window().draw(darkness, sf::BlendAdd);
+    // m_game->window().display();
 
     m_game->window().clear(sf::Color(189, 44, 11));
     sf::RectangleShape tick({1.0f, 6.0f});
@@ -850,7 +744,14 @@ void Scene_EA::sRender()
                 animation.getSprite().setPosition(transform.pos.x, transform.pos.y);
                 animation.getSprite().setScale(transform.scale.x, transform.scale.y);
                 animation.getSprite().setColor(c);
-                m_game->window().draw(animation.getSprite());
+                if (e->hasComponent<CShader>())
+                {
+                    m_game->window().draw(animation.getSprite(), &shaderFade);
+                }
+                else
+                {
+                    m_game->window().draw(animation.getSprite());
+                }
             }
         }
 

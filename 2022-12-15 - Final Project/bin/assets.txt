@@ -49,6 +49,8 @@ Texture   TexWalkKnife	images/EA/player/player_walk_knife_spritesheet.png
 Texture   TexIdleKnife	images/EA/player/player_idle_knife_spritesheet.png
 Texture   TexKnifeAttack images/EA/player/player_knife_attack_spritesheet.png
 Texture   TexPlayerDeath images/EA/player/player_death_spritesheet.png
+Texture   TexFinalBoss images/EA/monster-character-sprites/boss/walk_spritesheet.png
+
 
 
 Animation Stand		TexStand	1    0
@@ -63,6 +65,7 @@ Animation WalkKnife	TexWalkKnife 6    10
 Animation IdleKnife	TexIdleKnife 8    10
 Animation KnifeAttack	TexKnifeAttack 8    10
 Animation PlayerDeath	TexPlayerDeath 6    10
+Animation Boss	TexFinalBoss 8    10
 
 
 Animation Explosion     TexExplode     48    2 

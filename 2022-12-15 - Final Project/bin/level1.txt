@@ -31,5 +31,6 @@ Tile Rock   13  0  1 1
 Tile Rock   14  0  1 1
 Tile Rock   15  0  1 1
 Tile Rock   16  0  1 1
+NPC Boss   6    6  1 0 2 2 2
 
 Player 640 360 48 48 5 3

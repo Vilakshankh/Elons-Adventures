@@ -88,6 +88,12 @@ public:
     bool left = false;
     bool right = false;
     bool attack = false;
+
+    bool melee = false;
+    bool shoot = false;
+    bool gravity = false;
+    bool flame = false;
+
     Vec2 mousePos = Vec2(0, 0);
 
     CInput() {}
@@ -126,13 +132,33 @@ public:
         :real(r) {}
 };
 
+class CGravity : public Component
+{
+public:
+    sf::CircleShape circle;
+    CGravity() {}
+    CGravity(sf::CircleShape &circle)
+        :circle(circle) {}
+};
+
 class CCooldown : public Component
 {
 public:
-    int length;
+    int length1 = 0;
+    int length2 = 0;
     CCooldown() {}
-    CCooldown(int length)
-        :length(length) {}
+    CCooldown(int length, int num)
+    {
+        switch (num)
+        {
+        case 1:
+            length1 = length;
+            break;
+        case 2:
+            length2 = length;
+            break;
+        }
+    }
 };
 
 class CAnimation : public Component

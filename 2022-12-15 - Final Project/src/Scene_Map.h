@@ -46,6 +46,7 @@ public:
     
     std::shared_ptr<Entity> planetMars;
     std::shared_ptr<Entity> galaxy;
+    
     Scene_Map(GameEngine *gameEngine = nullptr);
     void sRender(); 
 };

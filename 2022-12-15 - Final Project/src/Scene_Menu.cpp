@@ -60,7 +60,7 @@ void Scene_Menu::init()
     m_menuText.setFont(m_game->assets().getFont("Megaman"));
     m_menuText.setCharacterSize(64);
 
-    m_game->playSound("MusicTitle");
+    //m_game->playSound("MusicTitle");
 
 
     //planets and galaxies
@@ -68,8 +68,28 @@ void Scene_Menu::init()
     planetEarth->addComponent<CAnimation>(m_game->assets().getAnimation("PlanetEarth"), true);
     planetMars = m_entityManager.addEntity("planetMars");
     planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet1"), true);
-    galaxy = m_entityManager.addEntity("galaxy");
-    galaxy->addComponent<CAnimation>(m_game->assets().getAnimation("Galaxy"), true);
+
+    //parallax layers
+    
+    galaxyL5 = m_entityManager.addEntity("galaxyL5");
+    galaxyL5->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyL5"), true);
+    galaxyL4 = m_entityManager.addEntity("galaxyL4");
+    galaxyL4->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyL4"), true);
+    galaxyL3 = m_entityManager.addEntity("galaxyL3");
+    galaxyL3->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyL3"), true);
+    galaxyL2 = m_entityManager.addEntity("galaxyL2");
+    galaxyL2->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyL2"), true);
+    galaxyL1 = m_entityManager.addEntity("galaxyL1");
+    galaxyL1->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyL1"), true);
+    galaxyOverlay = m_entityManager.addEntity("galaxyOverlay");
+    galaxyOverlay->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyOverlay"), true);
+
+
+    float mousePosX = 0;
+    float mousePosY = 0;
+    
+    
+    
 
 }
 
@@ -80,6 +100,13 @@ void Scene_Menu::update()
 
 void Scene_Menu::sDoAction(const Action &action)
 {
+
+    if (action.name() == "MOUSE_MOVE")
+    {
+             mousePosX = action.pos().x - 640;
+             mousePosY = action.pos().y - 385;
+    }
+
     if (action.type() == "START")
     {
         if (action.name() == "UP")
@@ -151,15 +178,55 @@ void Scene_Menu::sRender()
         if (e->hasComponent<CAnimation>())
         {
             auto& animation = e->getComponent<CAnimation>().animation;
-            if (e->tag() == "galaxy")
+            if (e->tag() == "galaxyL5")
             {
-                animation.getSprite().setPosition(800, 300);
-                animation.getSprite().setScale(1.7, 1.7);
+                animation.getSprite().setPosition(640 - (mousePosX / 600), 385);
+                animation.getSprite().setScale(1.41, 1.41);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+            if (e->tag() == "galaxyL4")
+            {
+                animation.getSprite().setPosition(640 + (mousePosX / 600), 385-(mousePosY / 900));
+                animation.getSprite().setScale(1.41, 1.41);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+            if (e->tag() == "galaxyL3")
+            {
+                animation.getSprite().setPosition(640 - (mousePosX / 600), 385 - (mousePosY / 600));
+                animation.getSprite().setScale(1.41, 1.41);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+            
+            if (e->tag() == "galaxyL2")
+            {
+                animation.getSprite().setPosition(640 + (mousePosX / 350), 385 + (mousePosY / 350));
+                animation.getSprite().setScale(1.41, 1.41);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+            if (e->tag() == "galaxyL1")
+            {
+                animation.getSprite().setPosition(640 - (mousePosX/200), 385 - (mousePosY / 200));
+                animation.getSprite().setScale(1.41, 1.41);
+                animation.update();
+                m_game->window().draw(animation.getSprite());
+            }
+            if (e->tag() == "galaxyOverlay")
+            {
+                animation.getSprite().setPosition(640, 385);
+                animation.getSprite().setScale(1.41, 1.41);
                 animation.update();
                 m_game->window().draw(animation.getSprite());
             }
         }
     }
+    
+    
+    
+    
 
     for (auto e : m_entityManager.getEntities())
     {

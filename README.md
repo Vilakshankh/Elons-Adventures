@@ -9,10 +9,17 @@ Project Group Members:
 Project Videos:
 
 * Project Demo: https://youtu.be/596Yf0Tnlqk
-* Project Trailer: YouTube URL
-* Project Presentation: YouTube URL
+* Project Trailer: https://www.youtube.com/watch?v=9GG_GeHruuQ&ab_channel=KyleShal
+* Project Presentation: https://www.youtube.com/watch?v=BYpd78hyT9w&feature=youtu.be
 
 Project Setup / Installation:
 
-* Your project setup and installation instructions go here
-* Feel free to include screenshots if you want
+* Clone Repo
+On Windows:
+* Open Project solution ("SFMLGame.sln") using Visual Studio.
+* Hit Run
+
+On Linux:
+*Open linux terminal to "Final Project folder/bin"
+*type "./Runscript" in the command line and hit enter. (The game should build using the makefile provided)
+

@@ -1,4 +1,5 @@
-varying out vec4 vert_pos;
+#version 130
+out vec4 vert_pos;
 
 void main()
 {

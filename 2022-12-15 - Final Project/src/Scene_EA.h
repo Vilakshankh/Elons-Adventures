@@ -52,7 +52,7 @@ protected:
 
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
 
-    Vec2 window2World(const Vec2& windowPos) const;
+    Vec2 window2World(const Vec2 &windowPos) const;
 
     void sMovement();
     void sAI();

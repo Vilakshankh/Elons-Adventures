@@ -48,18 +48,22 @@ Texture   TexStand	images/EA/astro_stand.png
 Texture   TexWalkKnife	images/EA/player/player_walk_knife_spritesheet.png
 Texture   TexIdleKnife	images/EA/player/player_idle_knife_spritesheet.png
 Texture   TexKnifeAttack images/EA/player/player_knife_attack_spritesheet.png
+Texture   TexBatAttack 	images/EA/player/player_bat_spritesheet.png
 Texture   TexPlayerDeath images/EA/player/player_death_spritesheet.png
-Texture   TexFinalBoss images/EA/monster-character-sprites/boss/walk_spritesheet.png
-
+Texture   TexFinalBoss 	images/EA/monster-character-sprites/boss/walk_spritesheet.png
+Texture	  TexBarrel	images/EA/Items/objects_outside_0013_Layer-14.png
+Texture   TexBullet 	images/EA/player/bullet.png
+Texture   TexFlame	images/EA/Explosion/flame.png
 
 Texture	TexPlanet1	images/EA/planet_level1.png
 Texture	TexPlanet2	images/EA/planet_level2.png
 Texture	TexPlanet3	images/EA/planet_level3.png
 Texture	TexPlanetEarth	images/EA/planet_earth.png
-Texture	TexGalaxy		images/EA/galaxy_dark.png
+Texture	TexGalaxy	images/EA/galaxy_dark.png
 
-
-
+Animation 	Flame	TexFlame	6	4
+Animation	Bullet	TexBullet	1	0
+Animation	Barrel	TexBarrel	1	0
 Animation	Planet1	TexPlanet1	50	6
 Animation	Planet2	TexPlanet2	50	6
 Animation	Planet3	TexPlanet3	50	6
@@ -78,7 +82,8 @@ Animation Bug		TexAlienBug	1    0
 Animation Humanoid	TexAlienHum	1    0
 Animation WalkKnife	TexWalkKnife 6    10
 Animation IdleKnife	TexIdleKnife 8    10
-Animation KnifeAttack	TexKnifeAttack 8    10
+Animation KnifeAttack	TexKnifeAttack 8    1
+Animation BatAttack	TexBatAttack 12    2
 Animation PlayerDeath	TexPlayerDeath 6    10
 Animation Boss	TexFinalBoss 8    10
 

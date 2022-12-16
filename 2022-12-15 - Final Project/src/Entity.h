@@ -36,6 +36,7 @@ typedef std::tuple<
     CSelected,
     CCooldown,
     CParallax,
+    CGravity,
     CShader>
     ComponentTuple;
 

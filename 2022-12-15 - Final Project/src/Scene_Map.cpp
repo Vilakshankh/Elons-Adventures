@@ -119,17 +119,18 @@ void Scene_Map::sDoAction(const Action &action)
 
             if (m_levelPaths[m_selectedMenuIndex] == "level1.txt")
             {
-                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
+                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[0]));
                 m_game->assets().getSound("MenuMusic").stop();
             }
             if (m_levelPaths[m_selectedMenuIndex] == "level2.txt")
             {
-                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
+                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[1]));
+                std::cout << m_levelPaths[1];
                 m_game->assets().getSound("MenuMusic").stop();
             }
             if (m_levelPaths[m_selectedMenuIndex] == "level3.txt")
             {
-                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
+                m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[2]));
                 m_game->assets().getSound("MenuMusic").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "back")

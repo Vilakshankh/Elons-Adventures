@@ -838,7 +838,6 @@ void Scene_EA::sCollision()
         // weapon collision with npc
         for (auto weapon : m_entityManager.getEntities("weapon"))
         {
-            std::cout << "weapons";
             if (weapon->hasComponent<CDamage>())
             {
                 Vec2 overlap = Physics::GetOverlap(npc, weapon);

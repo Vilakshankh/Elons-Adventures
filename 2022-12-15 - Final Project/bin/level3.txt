@@ -40,40 +40,40 @@ Tile Rock   0  0 28 12 1 1
 Tile Rock   0  0 29 12 1 1
 Tile Rock   0  0 22 8 1 1
 Tile Rock   0  0 27 12 1 1
-Tile Rock   0  0 26 12 1 1
-Tile Rock   0  0 24 12 1 1
-Tile Rock   0  0 23 12 1 1
-Tile Rock   0  0 25 12 1 1
-Tile Rock   0  0 22 12 1 1
-Tile Rock   0  0 20 12 1 1
-Tile Rock   0  0 21 12 1 1
-Tile Rock   0  0 19 11 1 1
-Tile Rock   0  0 18 10 1 1
-Tile Rock   0  0 13 1 1 1
-Tile Armour   0  0 0 3 1 1
-Tile DMGup   0  0 4 0 1 1
-Tile Rock   0  0 5 3 1 1
-Tile Rock   0  0 1 2 1 1
-Tile Rock   0  0 3 5 1 1
-Tile Rock   0  0 4 1 1 1
-Tile Rock   0  0 4 9 1 1
-Tile DMGup   0  0 0 1 1 1
-Tile Rock   0  0 6 8 1 1
-Tile Rock   0  0 7 12 1 1
-Tile Rock   0  0 12 10 1 1
-Tile Rock   0  0 15 13 1 1
-Tile Rock   0  0 14 3 1 1
-Tile Rock   0  0 15 11 1 1
-Tile Rock   0  0 16 0 1 1
-Tile Rock   0  0 0 0 1 1
-Tile Metal   0  0 28 1 1 1
-Tile Metal   0  0 0 2 1 1
-NPC A1   0  0 21 10 1 1 1 Follow 0
-NPC A2   0  0 23 10 1 1 1 Follow 0
-NPC Boss   0  0 23 3 1 1 1 Follow 0
-NPC Boss   0  0 27 4 1 1 1 Follow 0
-NPC A1   0  0 8 13 1 1 1 Follow 0
-NPC A2   0  0 0 6 1 1 1 Follow 0
-NPC Boss   0  0 0 7 1 1 1 Follow 0
-NPC A1   0  0 0 5 1 1 1 Follow 0
-Player 672 352 48 48 5 3
+Tile Rock   26 12 1 1
+Tile Rock   24 12 1 1
+Tile Rock   23 12 1 1
+Tile Rock   25 12 1 1
+Tile Rock   22 12 1 1
+Tile Rock   20 12 1 1
+Tile Rock   21 12 1 1
+Tile Rock   19 11 1 1
+Tile Rock   18 10 1 1
+Tile Rock   13 1 1 1
+Tile Armour    0 3 1 1
+Tile DMGup    4 0 1 1
+Tile Rock    5 3 1 1
+Tile Rock    1 2 1 1
+Tile Rock    3 5 1 1
+Tile Rock    4 1 1 1
+Tile Rock    4 9 1 1
+Tile DMGup    0 1 1 1
+Tile Rock    6 8 1 1
+Tile Rock    7 12 1 1
+Tile Rock    12 10 1 1
+Tile Rock    15 13 1 1
+Tile Rock    14 3 1 1
+Tile Rock    15 11 1 1
+Tile Rock    16 0 1 1
+Tile Rock   0 0 1 1
+Tile Metal    28 1 1 1
+Tile Metal    0 2 1 1
+NPC A1    21 10 1 1 1 0 1
+NPC A2    23 10 1 1 1 0 1
+NPC Boss    23 3 1 1 1 0 1
+NPC Boss    27 4 1 1 1 0 1
+NPC A1    8 13 1 1 1 0 1
+NPC A2    0 6 1 1 1 0 2
+NPC Boss    0 7 1 1 1 0 1
+NPC A1    0 5 1 1 1 0 1
+Player 672 352 48 48 5 1

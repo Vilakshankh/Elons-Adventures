@@ -70,20 +70,20 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
     {
         if (label == "Tile")
         {
-            //removed room x and Y temporarily
+            // removed room x and Y temporarily
             fin >> tName >> tGridX >> tGridY >> bMove >> bVision;
             auto tile = m_entityManager.addEntity("tile");
 
             // add tiles to entity manager list
             tile->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
-            tile->addComponent<CTransform>(Vec2(((tGridX*64)-32), ((tGridY*64)-32)));
+            tile->addComponent<CTransform>(Vec2(((tGridX * 64) - 32), ((tGridY * 64) - 32)));
             tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), bMove, bVision);
             tile->addComponent<CDraggable>();
         }
 
         if (label == "NPC")
         {
-            //removed room x and Y temporarily
+            // removed room x and Y temporarily
             fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
 
             // Checks type of AI
@@ -164,16 +164,16 @@ bool isInside(Vec2 pos, std::shared_ptr<Entity> e)
 
 void Scene_LevelEditor::snap2Grid(std::shared_ptr<Entity> &e)
 {
-    
-    //Checking if tile overlaps with another
-    Vec2 place = Vec2 ((int(e->getComponent<CTransform>().pos.x / 64) * 64 + 32), (int(e->getComponent<CTransform>().pos.y / 64) * 64 + 32));
+
+    // Checking if tile overlaps with another
+    Vec2 place = Vec2((int(e->getComponent<CTransform>().pos.x / 64) * 64 + 32), (int(e->getComponent<CTransform>().pos.y / 64) * 64 + 32));
     for (auto &a : m_entityManager.getEntities())
     {
         if (a->id() != e->id())
         {
             std::cout << "tag : " << a->tag() << "\n"
-                << "Check pos :" << int(a->getComponent<CTransform>().pos.x / 64) << ", " << int(a->getComponent<CTransform>().pos.y / 64) << "\n"
-                << "Snapp pos :" << int(e->getComponent<CTransform>().pos.x / 64) << ", " << int(e->getComponent<CTransform>().pos.y / 64) << "\n";
+                      << "Check pos :" << int(a->getComponent<CTransform>().pos.x / 64) << ", " << int(a->getComponent<CTransform>().pos.y / 64) << "\n"
+                      << "Snapp pos :" << int(e->getComponent<CTransform>().pos.x / 64) << ", " << int(e->getComponent<CTransform>().pos.y / 64) << "\n";
             Vec2 drop = Vec2((int(a->getComponent<CTransform>().pos.x / 64) * 64 + 32), (int(a->getComponent<CTransform>().pos.y / 64) * 64 + 32));
             if (drop == place)
             {
@@ -184,7 +184,7 @@ void Scene_LevelEditor::snap2Grid(std::shared_ptr<Entity> &e)
         }
     }
 
-    //Snaps tile to grid
+    // Snaps tile to grid
     e->getComponent<CTransform>().pos.x = int(e->getComponent<CTransform>().pos.x / 64) * 64 + 32;
     e->getComponent<CTransform>().pos.y = int(e->getComponent<CTransform>().pos.y / 64) * 64 + 32;
 }
@@ -223,9 +223,9 @@ void Scene_LevelEditor::spawnEditorItems()
             fin >> tName;
             auto tile = m_entityManager.addEntity("tile");
             tile->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
-            tile->addComponent<CTransform>(Vec2((xItem * 64)+32, (yItem * 64)+32));
+            tile->addComponent<CTransform>(Vec2((xItem * 64) + 32, (yItem * 64) + 32));
             yItem += 1;
-            tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), true, true); //Last false, false represents bMove and bVision
+            tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), true, true); // Last false, false represents bMove and bVision
             tile->addComponent<CDraggable>(true);
         }
         if (label == "NPC")
@@ -236,8 +236,8 @@ void Scene_LevelEditor::spawnEditorItems()
             npc->addComponent<CTransform>(Vec2((xItem * 64) + 32, (yItem * 64) + 32));
             yItem += 1;
             npc->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), true, true);
-            npc->addComponent<CHealth>(1, 1); //HARDCODED HEALTH //FIX
-            npc->addComponent<CDamage>(1); //FIX
+            npc->addComponent<CHealth>(1, 1); // HARDCODED HEALTH //FIX
+            npc->addComponent<CDamage>(1);    // FIX
             npc->addComponent<CDraggable>(true);
         }
     }
@@ -284,7 +284,7 @@ void Scene_LevelEditor::update()
     }
 }
 
-void Scene_LevelEditor::sMovement() //Used to move camera around the level editor
+void Scene_LevelEditor::sMovement() // Used to move camera around the level editor
 {
 
     m_player->getComponent<CTransform>().velocity = Vec2(0, 0);
@@ -311,19 +311,18 @@ void Scene_LevelEditor::sMovement() //Used to move camera around the level edito
         e->getComponent<CTransform>().pos += e->getComponent<CTransform>().velocity;
     }
 
-    
-    Vec2 bounds = m_player->getComponent<CTransform>().pos - Vec2((1280 / 2)-64, (768 / 2)-64);
+    Vec2 bounds = m_player->getComponent<CTransform>().pos - Vec2((1280 / 2) - 64, (768 / 2) - 64);
     if (bounds.x < 0)
     {
-        m_player->getComponent<CTransform>().pos.x = (1280 / 2)-64;
+        m_player->getComponent<CTransform>().pos.x = (1280 / 2) - 64;
     }
     if (bounds.y < 0)
     {
-        m_player->getComponent<CTransform>().pos.y = (768 / 2)-64;
+        m_player->getComponent<CTransform>().pos.y = (768 / 2) - 64;
     }
 }
 
-void Scene_LevelEditor::sDoAction(const Action& action)
+void Scene_LevelEditor::sDoAction(const Action &action)
 {
 
     if (action.type() == "START")
@@ -390,22 +389,22 @@ void Scene_LevelEditor::sDoAction(const Action& action)
         {
             m_player->getComponent<CInput>().mousePos = action.pos();
 
-            //m_mpos = ;
+            // m_mpos = ;
             Vec2 worldPos = window2World(action.pos());
             m_mouseShape.setPosition(worldPos.x, worldPos.y);
         }
         else if (action.name() == "LEFT_CLICK")
         {
 
-            //Sorry for bad code
-            //FIX format of code
+            // Sorry for bad code
+            // FIX format of code
             Vec2 worldPos = window2World(action.pos());
             std::shared_ptr<Entity> e = m_entityManager.addEntity("Bob");
             EntityVec tiles, npcs;
 
-            //Separates npcs and tiles for priority of drag&drop
+            // Separates npcs and tiles for priority of drag&drop
             bool skip = false;
-            for (auto& a : m_entityManager.getEntities())
+            for (auto &a : m_entityManager.getEntities())
             {
                 if (isInside(worldPos, a) && a->hasComponent<CDraggable>())
                 {
@@ -425,7 +424,7 @@ void Scene_LevelEditor::sDoAction(const Action& action)
                     }
                 }
             }
-            //Priority goes to npcs, then tiles
+            // Priority goes to npcs, then tiles
             if (!skip)
             {
                 if (npcs.size() != 0)
@@ -477,7 +476,7 @@ void Scene_LevelEditor::sDoAction(const Action& action)
 
         else if (action.name() == "RIGHT_CLICK")
         {
-            for (auto& e : m_entityManager.getEntities())
+            for (auto &e : m_entityManager.getEntities())
             {
                 if (e->hasComponent<CSelected>())
                 {
@@ -491,10 +490,8 @@ void Scene_LevelEditor::sDoAction(const Action& action)
                 {
                     e->addComponent<CSelected>();
                 }
-            }                
+            }
         }
-
-
     }
     else if (action.type() == "END")
     {
@@ -594,7 +591,7 @@ void Scene_LevelEditor::sStatus()
         }
     }
 }
-    
+
 void Scene_LevelEditor::sCollision()
 {
     for (auto tile : m_entityManager.getEntities("tile"))
@@ -934,13 +931,11 @@ void Scene_LevelEditor::sRender()
         }
     }
 
-    //Draw UI
-
-
+    // Draw UI
 }
 
-//Saving file
-void Scene_LevelEditor::saveLevel() //const std::string& filename
+// Saving file
+void Scene_LevelEditor::saveLevel() // const std::string& filename
 {
     std::ofstream fout;
     fout.open("test.txt");
@@ -948,50 +943,46 @@ void Scene_LevelEditor::saveLevel() //const std::string& filename
     for (auto e : m_entityManager.getEntities("tile"))
     {
         fout << "Tile "
-            << e->getComponent<CAnimation>().animation.getName()
-            << "   0  0 "
-            << int(e->getComponent<CTransform>().pos.x / 64)
-            << " "
-            << int(e->getComponent<CTransform>().pos.y / 64)
-            << " "
-            << e->getComponent<CBoundingBox>().blockMove
-            << " "
-            << e->getComponent<CBoundingBox>().blockVision
-            << "\n";
+             << e->getComponent<CAnimation>().animation.getName()
+             << "   0  0 "
+             << int(e->getComponent<CTransform>().pos.x / 64)
+             << " "
+             << int(e->getComponent<CTransform>().pos.y / 64)
+             << " "
+             << e->getComponent<CBoundingBox>().blockMove
+             << " "
+             << e->getComponent<CBoundingBox>().blockVision
+             << "\n";
     }
 
     for (auto e : m_entityManager.getEntities("npc"))
     {
         fout << "NPC "
-            << e->getComponent<CAnimation>().animation.getName()
-            << "   0  0 "
-            << int(e->getComponent<CTransform>().pos.x / 64)
-            << " "
-            << int(e->getComponent<CTransform>().pos.y / 64)
-            << " "
-            << e->getComponent<CBoundingBox>().blockMove
-            << " "
-            << e->getComponent<CBoundingBox>().blockVision
-            << " "
-            << e->getComponent<CHealth>().max
-            << " Follow "
-            << e->getComponent<CPatrol>().speed
-            << "\n";
-
+             << e->getComponent<CAnimation>().animation.getName()
+             << "   0  0 "
+             << int(e->getComponent<CTransform>().pos.x / 64)
+             << " "
+             << int(e->getComponent<CTransform>().pos.y / 64)
+             << " "
+             << e->getComponent<CBoundingBox>().blockMove
+             << " "
+             << e->getComponent<CBoundingBox>().blockVision
+             << " "
+             << e->getComponent<CHealth>().max
+             << " Follow "
+             << e->getComponent<CPatrol>().speed
+             << "\n";
     }
 
     for (auto e : m_entityManager.getEntities("playerEditor"))
     {
         fout << "Player "
-            << e->getComponent<CTransform>().pos.x << " " << e->getComponent<CTransform>().pos.y << " "
-            << e->getComponent<CBoundingBox>().size.x << " " << e->getComponent<CBoundingBox>().size.y << " "
-            << m_playerConfig.SPEED / 3
-            << e->getComponent<CHealth>().max;
+             << e->getComponent<CTransform>().pos.x << " " << e->getComponent<CTransform>().pos.y << " "
+             << e->getComponent<CBoundingBox>().size.x << " " << e->getComponent<CBoundingBox>().size.y << " "
+             << m_playerConfig.SPEED / 3
+             << e->getComponent<CHealth>().max;
     }
-
 }
-
-
 
 // Copyright (C) David Churchill - All Rights Reserved
 // COMP4300 - 2022-09 - Assignment 4

@@ -38,9 +38,7 @@ void Scene_Menu::init()
     registerAction(sf::Keyboard::D, "SELECT");
     registerAction(sf::Keyboard::Escape, "QUIT");
 
-
-
-    //menu items
+    // menu items
     m_title = "Elon's Adventure";
 
     m_menuStrings.push_back("Play/Continue");
@@ -60,17 +58,16 @@ void Scene_Menu::init()
     m_menuText.setFont(m_game->assets().getFont("Megaman"));
     m_menuText.setCharacterSize(64);
 
-    //m_game->playSound("MusicTitle");
+    m_game->playSound("MenuMusic");
 
-
-    //planets and galaxies
+    // planets and galaxies
     planetEarth = m_entityManager.addEntity("planetEarth");
     planetEarth->addComponent<CAnimation>(m_game->assets().getAnimation("PlanetEarth"), true);
     planetMars = m_entityManager.addEntity("planetMars");
     planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet1"), true);
 
-    //parallax layers
-    
+    // parallax layers
+
     galaxyL5 = m_entityManager.addEntity("galaxyL5");
     galaxyL5->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyL5"), true);
     galaxyL4 = m_entityManager.addEntity("galaxyL4");
@@ -84,13 +81,8 @@ void Scene_Menu::init()
     galaxyOverlay = m_entityManager.addEntity("galaxyOverlay");
     galaxyOverlay->addComponent<CAnimation>(m_game->assets().getAnimation("GalaxyOverlay"), true);
 
-
     float mousePosX = 0;
     float mousePosY = 0;
-    
-    
-    
-
 }
 
 void Scene_Menu::update()
@@ -103,8 +95,8 @@ void Scene_Menu::sDoAction(const Action &action)
 
     if (action.name() == "MOUSE_MOVE")
     {
-             mousePosX = action.pos().x - 640;
-             mousePosY = action.pos().y - 385;
+        mousePosX = action.pos().x - 640;
+        mousePosY = action.pos().y - 385;
     }
 
     if (action.type() == "START")
@@ -131,22 +123,22 @@ void Scene_Menu::sDoAction(const Action &action)
             if (m_levelPaths[m_selectedMenuIndex] == "level1.txt")
             {
                 m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "map")
             {
                 m_game->changeScene("MAP", std::make_shared<Scene_Map>(m_game));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "game-volume")
             {
                 m_game->changeScene("VOLUME", std::make_shared<Scene_Volume>(m_game));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "level-editor")
             {
                 m_game->changeScene("LEVELEDITOR", std::make_shared<Scene_LevelEditor>(m_game, m_levelPaths[0]));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "reset-progress")
             {
@@ -167,17 +159,17 @@ void Scene_Menu::sDoAction(const Action &action)
 
 void Scene_Menu::sRender()
 {
-    
+
     // clear the window to a blue
     m_game->window().setView(m_game->window().getDefaultView());
     m_game->window().clear(sf::Color(0, 0, 0));
 
-    //draw planets and galaxy
+    // draw planets and galaxy
     for (auto e : m_entityManager.getEntities())
     {
         if (e->hasComponent<CAnimation>())
         {
-            auto& animation = e->getComponent<CAnimation>().animation;
+            auto &animation = e->getComponent<CAnimation>().animation;
             if (e->tag() == "galaxyL5")
             {
                 animation.getSprite().setPosition(640 - (mousePosX / 600), 385);
@@ -187,7 +179,7 @@ void Scene_Menu::sRender()
             }
             if (e->tag() == "galaxyL4")
             {
-                animation.getSprite().setPosition(640 + (mousePosX / 600), 385-(mousePosY / 900));
+                animation.getSprite().setPosition(640 + (mousePosX / 600), 385 - (mousePosY / 900));
                 animation.getSprite().setScale(1.41, 1.41);
                 animation.update();
                 m_game->window().draw(animation.getSprite());
@@ -199,7 +191,7 @@ void Scene_Menu::sRender()
                 animation.update();
                 m_game->window().draw(animation.getSprite());
             }
-            
+
             if (e->tag() == "galaxyL2")
             {
                 animation.getSprite().setPosition(640 + (mousePosX / 350), 385 + (mousePosY / 350));
@@ -209,7 +201,7 @@ void Scene_Menu::sRender()
             }
             if (e->tag() == "galaxyL1")
             {
-                animation.getSprite().setPosition(640 - (mousePosX/200), 385 - (mousePosY / 200));
+                animation.getSprite().setPosition(640 - (mousePosX / 200), 385 - (mousePosY / 200));
                 animation.getSprite().setScale(1.41, 1.41);
                 animation.update();
                 m_game->window().draw(animation.getSprite());
@@ -223,21 +215,17 @@ void Scene_Menu::sRender()
             }
         }
     }
-    
-    
-    
-    
 
     for (auto e : m_entityManager.getEntities())
     {
 
         if (e->hasComponent<CAnimation>())
         {
-            auto& animation = e->getComponent<CAnimation>().animation;
+            auto &animation = e->getComponent<CAnimation>().animation;
             if (e->tag() == "planetEarth")
             {
                 animation.getSprite().setPosition(1000, 400);
-                //animation.getSprite().setScale(1, 1);
+                // animation.getSprite().setScale(1, 1);
                 animation.update();
                 m_game->window().draw(animation.getSprite());
             }
@@ -248,8 +236,6 @@ void Scene_Menu::sRender()
                 animation.update();
                 m_game->window().draw(animation.getSprite());
             }
-
-
         }
     }
 
@@ -277,8 +263,6 @@ void Scene_Menu::sRender()
     m_menuText.setString("Up: W     Down: S    Select: D      Back: ESC");
     m_menuText.setPosition(sf::Vector2f(200, 700));
     m_game->window().draw(m_menuText);
-
-    
 }
 
 void Scene_Menu::onEnd()

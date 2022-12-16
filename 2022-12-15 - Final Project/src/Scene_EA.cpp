@@ -122,7 +122,7 @@ void Scene_EA::loadLevel(const std::string &filename)
         }
     }
     spawnPlayer();
-    m_game->assets().getSound("MusicPlay").play();
+    m_game->assets().getSound("InGameMusic").play();
 }
 
 Vec2 Scene_EA::getPosition(int rx, int ry, int tx, int ty) const
@@ -352,11 +352,11 @@ void Scene_EA::sDoAction(const Action &action)
             setPaused(!m_paused);
             if (m_paused)
             {
-                m_game->assets().getSound("MusicPlay").stop();
+                m_game->assets().getSound("InGameMusic").stop();
             }
             else
             {
-                m_game->assets().getSound("MusicPlay").play();
+                m_game->assets().getSound("InGameMusic").play();
             }
         }
         else if (action.name() == "QUIT")
@@ -871,8 +871,8 @@ void Scene_EA::sCamera()
 void Scene_EA::onEnd()
 {
     // changes music to menu
-    m_game->assets().getSound("MusicPlay").stop();
-    m_game->assets().getSound("MusicTitle").play();
+    m_game->assets().getSound("InGameMusic").stop();
+    m_game->assets().getSound("MenuMusic").play();
 
     m_hasEnded = true;
     m_game->changeScene("MENU", nullptr, true);

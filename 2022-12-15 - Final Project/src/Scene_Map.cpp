@@ -29,8 +29,6 @@ Scene_Map::Scene_Map(GameEngine *gameEngine)
     init();
 }
 
-
-
 void Scene_Map::init()
 {
     registerAction(sf::Keyboard::W, "UP");
@@ -43,17 +41,15 @@ void Scene_Map::init()
     m_menuStrings.push_back("Level 1");
     m_menuStrings.push_back("Level 2");
     m_menuStrings.push_back("Level 3: Boss Fight");
-    
 
     m_levelPaths.push_back("level1.txt");
     m_levelPaths.push_back("level2.txt");
     m_levelPaths.push_back("level3.txt");
-    
 
     m_menuText.setFont(m_game->assets().getFont("Megaman"));
     m_menuText.setCharacterSize(64);
 
-    m_game->playSound("MusicTitle");
+    m_game->playSound("MenuMusic");
 
     planetMars = m_entityManager.addEntity("planetMars");
     planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet1"), true);
@@ -61,24 +57,15 @@ void Scene_Map::init()
     galaxy->addComponent<CAnimation>(m_game->assets().getAnimation("Galaxy"), true);
 }
 
-
-
-
-
 void Scene_Map::update()
 {
     m_entityManager.update();
 }
 
-
-
-
-
 void Scene_Map::sDoAction(const Action &action)
 {
     if (action.type() == "START")
     {
-        
 
         if (action.name() == "UP")
         {
@@ -95,7 +82,7 @@ void Scene_Map::sDoAction(const Action &action)
             if (m_selectedMenuIndex == 0)
             {
                 planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet1"), true);
-                //std::cout << m_selectedMenuIndex;
+                // std::cout << m_selectedMenuIndex;
             }
             else if (m_selectedMenuIndex == 1)
             {
@@ -110,11 +97,11 @@ void Scene_Map::sDoAction(const Action &action)
         else if (action.name() == "DOWN")
         {
             m_selectedMenuIndex = (m_selectedMenuIndex + 1) % m_menuStrings.size();
-            //std::cout << m_selectedMenuIndex;
+            // std::cout << m_selectedMenuIndex;
             if (m_selectedMenuIndex == 0)
             {
                 planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet1"), true);
-                //std::cout << m_selectedMenuIndex;
+                // std::cout << m_selectedMenuIndex;
             }
             else if (m_selectedMenuIndex == 1)
             {
@@ -125,7 +112,6 @@ void Scene_Map::sDoAction(const Action &action)
             {
                 planetMars->addComponent<CAnimation>(m_game->assets().getAnimation("Planet3"), true);
             }
-            
         }
         else if (action.name() == "SELECT")
         {
@@ -134,17 +120,17 @@ void Scene_Map::sDoAction(const Action &action)
             if (m_levelPaths[m_selectedMenuIndex] == "level1.txt")
             {
                 m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             if (m_levelPaths[m_selectedMenuIndex] == "level2.txt")
             {
                 m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             if (m_levelPaths[m_selectedMenuIndex] == "level3.txt")
             {
                 m_game->changeScene("SELECT", std::make_shared<Scene_EA>(m_game, m_levelPaths[m_selectedMenuIndex]));
-                m_game->assets().getSound("MusicTitle").stop();
+                m_game->assets().getSound("MenuMusic").stop();
             }
             else if (m_levelPaths[m_selectedMenuIndex] == "back")
             {
@@ -158,10 +144,6 @@ void Scene_Map::sDoAction(const Action &action)
     }
 }
 
-
-
-
-
 void Scene_Map::sRender()
 {
 
@@ -169,13 +151,12 @@ void Scene_Map::sRender()
     m_game->window().setView(m_game->window().getDefaultView());
     m_game->window().clear(sf::Color(0, 0, 0));
 
-
-    //draw galaxy
+    // draw galaxy
     for (auto e : m_entityManager.getEntities())
     {
         if (e->hasComponent<CAnimation>())
         {
-            auto& animation = e->getComponent<CAnimation>().animation;
+            auto &animation = e->getComponent<CAnimation>().animation;
             if (e->tag() == "galaxy")
             {
                 animation.getSprite().setPosition(800, 300);
@@ -186,28 +167,22 @@ void Scene_Map::sRender()
         }
     }
 
-
-
-    //draw the planetMars
+    // draw the planetMars
     for (auto e : m_entityManager.getEntities())
     {
         if (e->hasComponent<CAnimation>())
         {
 
-            auto& animation = e->getComponent<CAnimation>().animation;
+            auto &animation = e->getComponent<CAnimation>().animation;
             if (e->tag() == "planetMars")
             {
                 animation.getSprite().setPosition(1000, 400);
-                //animation.getSprite().setScale(1.5, 1.5);
+                // animation.getSprite().setScale(1.5, 1.5);
                 animation.update();
                 m_game->window().draw(animation.getSprite());
             }
-
-
         }
     }
-
-    
 
     // draw the game title in the top-left of the screen
     m_menuText.setCharacterSize(48);
@@ -226,14 +201,13 @@ void Scene_Map::sRender()
         m_menuText.setPosition(sf::Vector2f(200, 200 + i * 72));
         m_game->window().draw(m_menuText);
     }
-    
+
     // draw the controls in the bottom-left
     m_menuText.setCharacterSize(20);
     m_menuText.setFillColor(sf::Color(100, 0, 0));
     m_menuText.setString("Up: W     Down: S    Select: D      Back: ESC");
     m_menuText.setPosition(sf::Vector2f(200, 700));
     m_game->window().draw(m_menuText);
-
 }
 
 void Scene_Map::onEnd()

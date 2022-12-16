@@ -153,17 +153,6 @@ void Scene_EA::spawnMissle(Vec2 position)
     missle->addComponent<CLifeSpan>(120, m_currentFrame);
 }
 
-void Scene_EA::spawnMissle(Vec2 position)
-{
-    auto missle = m_entityManager.addEntity("missle");
-    missle->addComponent<CTransform>(position);
-    missle->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-    missle->addComponent<CBoundingBox>(m_game->assets().getAnimation("SwordUp").getSize());
-    missle->addComponent<CDamage>(1);
-    missle->getComponent<CTransform>().velocity = Vec2(0, 10);
-    missle->addComponent<CLifeSpan>(120, m_currentFrame);
-}
-
 void Scene_EA::spawnSword(std::shared_ptr<Entity> entity)
 {
 

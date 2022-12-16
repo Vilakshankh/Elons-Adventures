@@ -38,6 +38,7 @@ protected:
     sf::Shader shaderFade;
     sf::Shader shaderShake;
     sf::Shader shaderShadow;
+    sf::Shader shaderRed;
 
     bool m_drawTextures = true;
     bool m_drawCollision = false;
@@ -74,9 +75,17 @@ public:
 
     sf::Texture background;
     sf::Sprite backgroundSprite;
+    sf::Text healthText;
+    sf::Text scoreText;
+    sf::Text livesText;
 
-    void sRender();
+    sf::Text weaponText;
+    sf::Text levelText;
+
+    void
+    sRender();
     void sDoAction(const Action &action);
+    void sHUD();
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

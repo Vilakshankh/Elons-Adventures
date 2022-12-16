@@ -37,7 +37,9 @@ typedef std::tuple<
     CCooldown,
     CParallax,
     CGravity,
-    CShader>
+    CShader,
+    CScore,
+    CLives>
     ComponentTuple;
 
 class Entity

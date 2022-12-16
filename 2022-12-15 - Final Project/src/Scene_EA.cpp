@@ -47,6 +47,8 @@ void Scene_EA::init(const std::string &levelPath)
     // Load the shader
     shaderFade.loadFromFile("shaders/shader_fade.frag", sf::Shader::Fragment);
     shaderShake.loadFromFile("shaders/shader_shake.frag", sf::Shader::Fragment);
+    shaderRed.loadFromFile("shaders/shader_red.frag", sf::Shader::Fragment);
+
     // load both shaders
     if (!shaderShadow.loadFromFile("shaders/vertex_shader.vert", "shaders/fragment_shader.frag"))
     {
@@ -136,7 +138,7 @@ void Scene_EA::spawnPlayer()
     m_player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), true, false);
     m_player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
     m_player->addComponent<CInput>();
-    m_player->addComponent<CShader>("shaderFade");
+    m_player->addComponent<CShader>("shaderRed");
 }
 
 void Scene_EA::spawnMissle(Vec2 position)
@@ -247,9 +249,11 @@ void Scene_EA::update()
         sCollision();
         sAnimation();
         sCamera();
+        sHUD();
 
         shaderShake.setUniform("time", m_game->time.getElapsedTime().asSeconds());
         shaderFade.setUniform("time", m_game->time.getElapsedTime().asSeconds());
+        shaderRed.setUniform("time", m_game->time.getElapsedTime().asSeconds());
         shaderShadow.setUniform("hasTexture", true);
         sf::Vector2f lightPos = sf::Vector2f(m_player->getComponent<CTransform>().pos.x, m_player->getComponent<CTransform>().pos.y);
         shaderShadow.setUniform("lightPos", lightPos);
@@ -501,6 +505,44 @@ void Scene_EA::sAI()
     }
 }
 
+void Scene_EA::sHUD()
+{
+    // Health
+    healthText.setFont(m_game->assets().getFont("Megaman"));
+    healthText.setCharacterSize(16);
+    healthText.setFillColor(sf::Color::White);
+    healthText.setPosition(m_player->getComponent<CTransform>().pos.x - healthText.getGlobalBounds().width / 2, m_player->getComponent<CTransform>().pos.y - 350);
+
+    healthText.setString("Health: " + std::to_string(m_player->getComponent<CHealth>().current));
+
+    // Score
+    scoreText.setFont(m_game->assets().getFont("Megaman"));
+    scoreText.setCharacterSize(16);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(m_player->getComponent<CTransform>().pos.x + scoreText.getGlobalBounds().width, m_player->getComponent<CTransform>().pos.y - 350);
+    scoreText.setString("Score: " + std::to_string(m_player->getComponent<CScore>().currentScore));
+
+    // Lives
+    livesText.setFont(m_game->assets().getFont("Megaman"));
+    livesText.setCharacterSize(16);
+    livesText.setFillColor(sf::Color::White);
+    livesText.setPosition(m_player->getComponent<CTransform>().pos.x - livesText.getGlobalBounds().width * 2, m_player->getComponent<CTransform>().pos.y - 350);
+    livesText.setString("Lives: " + std::to_string(m_player->getComponent<CLives>().livesRemaining));
+
+    // Level
+    // levelText.setFont(m_game->assets().getFont("Megaman"));
+    // levelText.setCharacterSize(16);
+    // levelText.setFillColor(sf::Color::White);
+    // levelText.setPosition(m_player->getComponent<CTransform>().pos.x - levelText.getGlobalBounds().width * 3, m_player->getComponent<CTransform>().pos.y - 350);
+    // levelText.setString("Level: " + std::to_string(m_player->getComponent<CLevel>().level));
+
+    weaponText.setFont(m_game->assets().getFont("Megaman"));
+    weaponText.setCharacterSize(16);
+    weaponText.setFillColor(sf::Color::White);
+    weaponText.setPosition(m_player->getComponent<CTransform>().pos.x - weaponText.getGlobalBounds().width * 3, m_player->getComponent<CTransform>().pos.y - 350);
+    weaponText.setString("Weapon: " + m_player->getComponent<CState>().state);
+}
+
 void Scene_EA::sStatus()
 {
 
@@ -573,6 +615,7 @@ void Scene_EA::sCollision()
         m_player->getComponent<CTransform>().pos.y = 1536;
     }
 
+    // Player colisions with missile
     for (auto missle : m_entityManager.getEntities("missle"))
     {
         Vec2 overlap = Physics::GetOverlap(missle, m_player);
@@ -700,40 +743,48 @@ void Scene_EA::sCollision()
                 m_player->getComponent<CTransform>().pos = Vec2(m_playerConfig.X, m_playerConfig.Y);
                 m_player->getComponent<CHealth>().current = m_playerConfig.HEALTH;
                 m_game->assets().getSound("LinkDie").play();
-            }
-            else
-            {
-                m_player->addComponent<CInvincibility>(30);
-                m_game->assets().getSound("LinkHurt").play();
-            }
-        }
+                m_player->getComponent<CLives>().livesRemaining -= 1;
 
-        // sword collision with npc
-        for (auto &weapon : m_entityManager.getEntities("weapon"))
-        {
-            if (weapon->hasComponent<CDamage>())
-            {
-                Vec2 overlap = Physics::GetOverlap(npc, weapon);
-                if (overlap.x > 0 && overlap.y > 0)
+                if (m_player->getComponent<CLives>().livesRemaining == 0)
                 {
+                    m_game->assets().getSound("GameOver").play();
+                    onEnd();
+                }
+                else
+                {
+                    m_player->addComponent<CInvincibility>(30);
+                    m_game->assets().getSound("LinkHurt").play();
+                }
+            }
 
-                    npc->getComponent<CHealth>().current -= weapon->getComponent<CDamage>().damage;
-                    if (weapon->getComponent<CAnimation>().animation.getName() == "Bullet")
+            // sword collision with npc
+            for (auto &weapon : m_entityManager.getEntities("weapon"))
+            {
+                if (weapon->hasComponent<CDamage>())
+                {
+                    Vec2 overlap = Physics::GetOverlap(npc, weapon);
+                    if (overlap.x > 0 && overlap.y > 0)
                     {
-                        weapon->destroy();
-                    }
-                    else
-                    {
-                        weapon->removeComponent<CDamage>();
-                        weapon->removeComponent<CBoundingBox>();
-                    }
 
-                    m_game->assets().getSound("EnemyHit").play();
+                        npc->getComponent<CHealth>().current -= weapon->getComponent<CDamage>().damage;
+                        m_player->getComponent<CScore>().currentScore += weapon->getComponent<CDamage>().damage;
+                        if (weapon->getComponent<CAnimation>().animation.getName() == "Bullet")
+                        {
+                            weapon->destroy();
+                        }
+                        else
+                        {
+                            weapon->removeComponent<CDamage>();
+                            weapon->removeComponent<CBoundingBox>();
+                        }
 
-                    if (npc->getComponent<CHealth>().current <= 0)
-                    {
-                        m_game->assets().getSound("EnemyDie").play();
-                        npc->destroy();
+                        m_game->assets().getSound("EnemyHit").play();
+
+                        if (npc->getComponent<CHealth>().current <= 0)
+                        {
+                            m_game->assets().getSound("EnemyDie").play();
+                            npc->destroy();
+                        }
                     }
                 }
             }
@@ -876,6 +927,10 @@ void Scene_EA::sRender()
                     {
                         m_game->window().draw(animation.getSprite(), &shaderShake);
                     }
+                    if (e->getComponent<CShader>().shaderName == "shaderRed")
+                    {
+                        m_game->window().draw(animation.getSprite(), &shaderRed);
+                    }
                 }
 
                 else
@@ -914,6 +969,10 @@ void Scene_EA::sRender()
             }
         }
     }
+    m_game->window().draw(healthText);
+    m_game->window().draw(scoreText);
+    m_game->window().draw(livesText);
+    m_game->window().draw(weaponText);
 
     // draw all Entity collision bounding boxes with a rectangleshape
     if (m_drawCollision)

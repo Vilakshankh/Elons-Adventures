@@ -18,7 +18,6 @@
 #include "Animation.h"
 #include "Assets.h"
 
-
 class Component
 {
 public:
@@ -80,6 +79,23 @@ public:
         : max(m), current(c) {}
 };
 
+class CScore : public Component
+{
+public:
+    int currentScore = 0;
+    CScore() {}
+    CScore(int c)
+        : currentScore(c) {}
+};
+
+class CLives : public Component
+{
+public:
+    int livesRemaining = 3;
+    CLives() {}
+    CLives(int c)
+        : livesRemaining(c) {}
+};
 class CInput : public Component
 {
 public:
@@ -129,7 +145,7 @@ public:
     bool real = false;
     CSelected() {}
     CSelected(bool r)
-        :real(r) {}
+        : real(r) {}
 };
 
 class CGravity : public Component
@@ -138,7 +154,7 @@ public:
     sf::CircleShape circle;
     CGravity() {}
     CGravity(sf::CircleShape &circle)
-        :circle(circle) {}
+        : circle(circle) {}
 };
 
 class CCooldown : public Component
@@ -209,15 +225,13 @@ public:
 
 class CParallax : public Component
 {
-public: 
-    
+public:
     std::string direction = "forward";
 
-    
     float speed = 0;
     CParallax() {}
 
-    CParallax(const std::string& fb, float speed) : direction(fb), speed(speed) {}
+    CParallax(const std::string &fb, float speed) : direction(fb), speed(speed) {}
 };
 
 // Copyright (C) David Churchill - All Rights Reserved

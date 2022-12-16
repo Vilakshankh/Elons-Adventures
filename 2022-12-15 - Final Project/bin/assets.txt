@@ -148,5 +148,6 @@ Sound     EnemyDie      sounds/LOZ_Enemy_Die.wav
 Sound     GetItem       sounds/LOZ_Get_Item.wav
 Sound     MusicTitle    sounds/title.ogg
 Sound     MusicPlay     sounds/music.ogg
+Sound     GameOver      sounds/game_over.wav
 Font      Mario         fonts/mario.ttf
 Font      Megaman    fonts/megaman.ttf

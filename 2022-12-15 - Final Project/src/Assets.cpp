@@ -78,8 +78,15 @@ void Assets::addTexture(const std::string &textureName, const std::string &path,
 
 const sf::Texture &Assets::getTexture(const std::string &textureName) const
 {
-    assert(m_textureMap.find(textureName) != m_textureMap.end());
-    return m_textureMap.at(textureName);
+    if (m_textureMap.find(textureName) != m_textureMap.end())
+    {
+        return m_textureMap.at(textureName);
+    }
+    else
+    {
+        std::cerr << "Could not find texture: " << textureName << std::endl;
+        return m_textureMap.at("TexPlanet1");
+    }
 }
 
 void Assets::addAnimation(const std::string &animationName, const std::string &textureName, size_t frameCount, size_t speed)

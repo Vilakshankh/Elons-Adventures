@@ -79,6 +79,23 @@ public:
         : max(m), current(c) {}
 };
 
+class CScore : public Component
+{
+public:
+    int currentScore = 0;
+    CScore() {}
+    CScore(int c)
+        : currentScore(c) {}
+};
+
+class CLives : public Component
+{
+public:
+    int livesRemaining = 3;
+    CLives() {}
+    CLives(int c)
+        : livesRemaining(c) {}
+};
 class CInput : public Component
 {
 public:

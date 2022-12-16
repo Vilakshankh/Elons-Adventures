@@ -47,7 +47,7 @@ void Scene_Volume::init()
     m_menuText.setFont(m_game->assets().getFont("Megaman"));
     m_menuText.setCharacterSize(64);
 
-    m_game->playSound("MusicTitle");
+    m_game->playSound("MenuMusic");
 }
 
 void Scene_Volume::update()

@@ -107,8 +107,10 @@ Animation	Barrel	TexBarrel	1	0
 Animation	BatIdle	TexIdleBat	8	10
 Animation	BatWalk	TexWalkBat	6	10
 
-
-
+Animation	FlameIdle TexIdleFlame	8	10
+Animation	GunIdle	TexIdleGun	8	10
+Animation	GunWalk	TexWalkGun	6	10
+Animation	FlameWalk TexWalkFlame	6	10
 
 Animation	Planet1	TexPlanet1	50	6
 Animation	Planet2	TexPlanet2	50	6

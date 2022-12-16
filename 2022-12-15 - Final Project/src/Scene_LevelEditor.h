@@ -42,10 +42,16 @@ protected:
 
     Vec2                    m_mpos;
     sf::CircleShape         m_mouseShape;
+    sf::CircleShape         m_selected;
 
     void init(const std::string& levelPath);
 
     void loadLevel(const std::string& filename);
+    void saveLevel(); //const std::string& filename
+    void spawnEditorItems();
+    void snap2Grid(std::shared_ptr<Entity>& e);
+
+    void editClick();
 
     void onEnd();
     void update();

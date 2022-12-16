@@ -24,6 +24,7 @@
 Scene_LevelEditor::Scene_LevelEditor(GameEngine *game, const std::string &levelPath)
     : Scene(game), m_levelPath(levelPath)
 {
+    std::string levelFile;
     init(m_levelPath);
 }
 
@@ -69,19 +70,21 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
     {
         if (label == "Tile")
         {
-            fin >> tName >> roomX >> roomY >> tGridX >> tGridY >> bMove >> bVision;
+            //removed room x and Y temporarily
+            fin >> tName >> tGridX >> tGridY >> bMove >> bVision;
             auto tile = m_entityManager.addEntity("tile");
 
             // add tiles to entity manager list
             tile->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
-            tile->addComponent<CTransform>(getPosition(roomX, roomY, tGridX, tGridY));
+            tile->addComponent<CTransform>(Vec2(((tGridX*64)-32), ((tGridY*64)-32)));
             tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), bMove, bVision);
             tile->addComponent<CDraggable>();
         }
 
         if (label == "NPC")
         {
-            fin >> nName >> nRoomX >> nRoomY >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
+            //removed room x and Y temporarily
+            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> AI >> nSpeed;
 
             // Checks type of AI
             auto npc = m_entityManager.addEntity("npc");
@@ -100,15 +103,16 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
             }
             else
             {
-                npc->addComponent<CFollowPlayer>(getPosition(nRoomX, nRoomY, nGridX, nGridY), nSpeed);
+                npc->addComponent<CFollowPlayer>(Vec2(nGridX, nGridY), nSpeed);
             }
 
             // Gives npc all remaining components
             npc->addComponent<CAnimation>(m_game->assets().getAnimation(nName), true);
-            npc->addComponent<CTransform>(getPosition(nRoomX, nRoomY, nGridX, nGridY));
+            npc->addComponent<CTransform>(Vec2(((tGridX * 64) - 32), ((tGridY * 64) - 32)));
             npc->addComponent<CBoundingBox>(m_game->assets().getAnimation(nName).getSize(), nMove, nVision);
             npc->addComponent<CHealth>(nHealth, nHealth);
             npc->addComponent<CDamage>(nDamage);
+            npc->addComponent<CDraggable>(true);
         }
 
         // load player config
@@ -116,9 +120,19 @@ void Scene_LevelEditor::loadLevel(const std::string &filename)
         {
             fin >> m_playerConfig.X >> m_playerConfig.Y >> m_playerConfig.CX >> m_playerConfig.CY >> m_playerConfig.SPEED >> m_playerConfig.HEALTH;
             m_playerConfig.SPEED *= 3;
+
+            auto player = m_entityManager.addEntity("playerEditor");
+            player->addComponent<CTransform>(Vec2(m_playerConfig.X, m_playerConfig.Y));
+            player->addComponent<CAnimation>(m_game->assets().getAnimation("StandDown"), true);
+            player->addComponent<CBoundingBox>(Vec2(m_playerConfig.CX, m_playerConfig.CY), false, false);
+            player->addComponent<CHealth>(m_playerConfig.HEALTH, m_playerConfig.HEALTH);
+            player->addComponent<CDraggable>();
         }
     }
     spawnPlayer();
+
+    spawnEditorItems();
+
     // m_game->assets().getSound("MusicPlay").play();
 }
 
@@ -148,10 +162,29 @@ bool isInside(Vec2 pos, std::shared_ptr<Entity> e)
     return ((dx <= size.x / 2) && (dy <= size.y / 2));
 }
 
-void snap2Grid(std::shared_ptr<Entity> &e)
+void Scene_LevelEditor::snap2Grid(std::shared_ptr<Entity> &e)
 {
-    // NEGATIVE NUMBERS FUCK IT UP
-    // FIX
+    
+    //Checking if tile overlaps with another
+    Vec2 place = Vec2 ((int(e->getComponent<CTransform>().pos.x / 64) * 64 + 32), (int(e->getComponent<CTransform>().pos.y / 64) * 64 + 32));
+    for (auto &a : m_entityManager.getEntities())
+    {
+        if (a->id() != e->id())
+        {
+            std::cout << "tag : " << a->tag() << "\n"
+                << "Check pos :" << int(a->getComponent<CTransform>().pos.x / 64) << ", " << int(a->getComponent<CTransform>().pos.y / 64) << "\n"
+                << "Snapp pos :" << int(e->getComponent<CTransform>().pos.x / 64) << ", " << int(e->getComponent<CTransform>().pos.y / 64) << "\n";
+            Vec2 drop = Vec2((int(a->getComponent<CTransform>().pos.x / 64) * 64 + 32), (int(a->getComponent<CTransform>().pos.y / 64) * 64 + 32));
+            if (drop == place)
+            {
+                std::cout << "reqursive call: " << e->getComponent<CTransform>().pos.x << "\n";
+                e->getComponent<CTransform>().pos.x += 64;
+                snap2Grid(e);
+            }
+        }
+    }
+
+    //Snaps tile to grid
     e->getComponent<CTransform>().pos.x = int(e->getComponent<CTransform>().pos.x / 64) * 64 + 32;
     e->getComponent<CTransform>().pos.y = int(e->getComponent<CTransform>().pos.y / 64) * 64 + 32;
 }
@@ -162,28 +195,62 @@ void Scene_LevelEditor::sDragAndDrop()
     {
         if (e->hasComponent<CDraggable>() && e->getComponent<CDraggable>().dragging)
         {
-            Vec2 worldPos = window2World(m_mpos);
-            e->getComponent<CTransform>().pos = worldPos;
+            e->getComponent<CTransform>().pos = window2World(m_player->getComponent<CInput>().mousePos);
+        }
+    }
+}
+
+void Scene_LevelEditor::spawnEditorItems()
+{
+    std::string label;
+    std::string tName;
+
+    std::ifstream fin("editorItems.txt");
+
+    int xItem = 0;
+    int yItem = 0;
+
+    while (fin >> label)
+    {
+        if (yItem >= 12)
+        {
+            yItem = 0;
+            xItem += 1;
+        }
+
+        if (label == "Tile")
+        {
+            fin >> tName;
+            auto tile = m_entityManager.addEntity("tile");
+            tile->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
+            tile->addComponent<CTransform>(Vec2((xItem * 64)+32, (yItem * 64)+32));
+            yItem += 1;
+            tile->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), true, true); //Last false, false represents bMove and bVision
+            tile->addComponent<CDraggable>(true);
+        }
+        if (label == "NPC")
+        {
+            fin >> tName;
+            auto npc = m_entityManager.addEntity("npc");
+            npc->addComponent<CAnimation>(m_game->assets().getAnimation(tName), true);
+            npc->addComponent<CTransform>(Vec2((xItem * 64) + 32, (yItem * 64) + 32));
+            yItem += 1;
+            npc->addComponent<CBoundingBox>(m_game->assets().getAnimation(tName).getSize(), true, true);
+            npc->addComponent<CHealth>(1, 1); //HARDCODED HEALTH //FIX
+            npc->addComponent<CDamage>(1); //FIX
+            npc->addComponent<CDraggable>(true);
         }
     }
 }
 
 void Scene_LevelEditor::sLevelMenu()
 {
-    // Spawns a tile ever second
-    // FIX
-    auto tile = m_entityManager.addEntity("tile");
-    tile->addComponent<CAnimation>(m_game->assets().getAnimation("WaterMM"), true);
-    tile->addComponent<CTransform>();
-    tile->addComponent<CBoundingBox>(m_game->assets().getAnimation("WaterMM").getSize(), false, false);
-    tile->addComponent<CDraggable>(true);
-
-    for (auto e : m_entityManager.getEntities("tile"))
+    for (auto e : m_entityManager.getEntities())
     {
         if (e->getComponent<CDraggable>().edit)
         {
-            e->getComponent<CTransform>().pos.x = m_game->window().getView().getCenter().x - (m_game->window().getSize().x / 2) + 32;
-            e->getComponent<CTransform>().pos.y = m_game->window().getView().getCenter().y - (m_game->window().getSize().y / 2) + 32;
+            e->getComponent<CTransform>().pos.x += m_player->getComponent<CTransform>().pos.x - m_player->getComponent<CTransform>().prevPos.x;
+            e->getComponent<CTransform>().pos.y += m_player->getComponent<CTransform>().pos.y - m_player->getComponent<CTransform>().prevPos.y;
         }
     }
 }
@@ -206,7 +273,7 @@ void Scene_LevelEditor::update()
 
         // sAI();
         sMovement();
-        // sStatus();
+        sStatus();
         // sCollision();
         // sAnimation();
         sCamera();
@@ -217,26 +284,25 @@ void Scene_LevelEditor::update()
     }
 }
 
-void Scene_LevelEditor::sMovement()
+void Scene_LevelEditor::sMovement() //Used to move camera around the level editor
 {
 
-    // Update to move camera
-
+    m_player->getComponent<CTransform>().velocity = Vec2(0, 0);
     if (m_player->getComponent<CInput>().up)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(0, -m_playerConfig.SPEED);
+        m_player->getComponent<CTransform>().velocity += Vec2(0, -m_playerConfig.SPEED);
     }
     if (m_player->getComponent<CInput>().down)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(0, m_playerConfig.SPEED);
+        m_player->getComponent<CTransform>().velocity += Vec2(0, m_playerConfig.SPEED);
     }
     if (m_player->getComponent<CInput>().left)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(-m_playerConfig.SPEED, 0);
+        m_player->getComponent<CTransform>().velocity += Vec2(-m_playerConfig.SPEED, 0);
     }
     if (m_player->getComponent<CInput>().right)
     {
-        m_player->getComponent<CTransform>().pos += Vec2(m_playerConfig.SPEED, 0);
+        m_player->getComponent<CTransform>().velocity += Vec2(m_playerConfig.SPEED, 0);
     }
 
     for (auto e : m_entityManager.getEntities())
@@ -244,9 +310,20 @@ void Scene_LevelEditor::sMovement()
         e->getComponent<CTransform>().prevPos = e->getComponent<CTransform>().pos;
         e->getComponent<CTransform>().pos += e->getComponent<CTransform>().velocity;
     }
+
+    
+    Vec2 bounds = m_player->getComponent<CTransform>().pos - Vec2((1280 / 2)-64, (768 / 2)-64);
+    if (bounds.x < 0)
+    {
+        m_player->getComponent<CTransform>().pos.x = (1280 / 2)-64;
+    }
+    if (bounds.y < 0)
+    {
+        m_player->getComponent<CTransform>().pos.y = (768 / 2)-64;
+    }
 }
 
-void Scene_LevelEditor::sDoAction(const Action &action)
+void Scene_LevelEditor::sDoAction(const Action& action)
 {
 
     if (action.type() == "START")
@@ -309,34 +386,115 @@ void Scene_LevelEditor::sDoAction(const Action &action)
             // spawnSword(m_player);
             m_player->getComponent<CState>().state = "attack";
         }
-        else if (action.name() == "MOUSE_MOVE" && !m_player->getComponent<CInput>().attack)
+        else if (action.name() == "MOUSE_MOVE")
         {
             m_player->getComponent<CInput>().mousePos = action.pos();
 
-            m_mpos = action.pos();
-            Vec2 worldPos = window2World(m_mpos);
+            //m_mpos = ;
+            Vec2 worldPos = window2World(action.pos());
             m_mouseShape.setPosition(worldPos.x, worldPos.y);
         }
         else if (action.name() == "LEFT_CLICK")
         {
-            Vec2 worldPos = window2World(action.pos());
-            for (auto e : m_entityManager.getEntities())
-            {
-                if (isInside(worldPos, e) && e->hasComponent<CDraggable>())
-                {
-                    if (e->getComponent<CDraggable>().dragging)
-                    {
-                        if (e->getComponent<CDraggable>().edit)
-                        {
-                            e->getComponent<CDraggable>().edit = false;
-                        }
-                        snap2Grid(e);
-                    }
 
-                    e->getComponent<CDraggable>().dragging = !e->getComponent<CDraggable>().dragging;
+            //Sorry for bad code
+            //FIX format of code
+            Vec2 worldPos = window2World(action.pos());
+            std::shared_ptr<Entity> e = m_entityManager.addEntity("Bob");
+            EntityVec tiles, npcs;
+
+            //Separates npcs and tiles for priority of drag&drop
+            bool skip = false;
+            for (auto& a : m_entityManager.getEntities())
+            {
+                if (isInside(worldPos, a) && a->hasComponent<CDraggable>())
+                {
+                    if (a->getComponent<CDraggable>().dragging == true)
+                    {
+                        e = a;
+                        skip = true;
+                        break;
+                    }
+                    if (a->tag() == "tile")
+                    {
+                        tiles.push_back(a);
+                    }
+                    else
+                    {
+                        npcs.push_back(a);
+                    }
                 }
             }
+            //Priority goes to npcs, then tiles
+            if (!skip)
+            {
+                if (npcs.size() != 0)
+                {
+                    e = npcs[0];
+                }
+                else if (tiles.size() != 0)
+                {
+                    e = tiles[0];
+                }
+            }
+
+            if (e->getComponent<CDraggable>().dragging)
+            {
+                if (e->getComponent<CDraggable>().edit)
+                {
+                    e->getComponent<CDraggable>().edit = false;
+                }
+                snap2Grid(e);
+            }
+            else
+            {
+                if (e->getComponent<CDraggable>().edit)
+                {
+                    std::string tag = e->tag();
+                    if (tag == "tile")
+                    {
+                        auto tile = m_entityManager.addEntity("tile");
+                        tile->addComponent<CAnimation>(e->getComponent<CAnimation>().animation, true);
+                        tile->addComponent<CTransform>(e->getComponent<CTransform>().pos);
+                        tile->addComponent<CBoundingBox>(e->getComponent<CBoundingBox>().size, e->getComponent<CBoundingBox>().blockMove, e->getComponent<CBoundingBox>().blockVision);
+                        tile->addComponent<CDraggable>(true);
+                    }
+                    else if (tag == "npc")
+                    {
+                        auto npc = m_entityManager.addEntity("npc");
+                        npc->addComponent<CAnimation>(e->getComponent<CAnimation>().animation, true);
+                        npc->addComponent<CTransform>(e->getComponent<CTransform>().pos);
+                        npc->addComponent<CBoundingBox>(e->getComponent<CBoundingBox>().size, e->getComponent<CBoundingBox>().blockMove, e->getComponent<CBoundingBox>().blockVision);
+                        npc->addComponent<CHealth>(e->getComponent<CHealth>().max, e->getComponent<CHealth>().max);
+                        npc->addComponent<CDamage>(e->getComponent<CDamage>().damage);
+                        npc->addComponent<CDraggable>(true);
+                    }
+                }
+            }
+
+            e->getComponent<CDraggable>().dragging = !e->getComponent<CDraggable>().dragging;
         }
+
+        else if (action.name() == "RIGHT_CLICK")
+        {
+            for (auto& e : m_entityManager.getEntities())
+            {
+                if (e->hasComponent<CSelected>())
+                {
+                    e->removeComponent<CSelected>();
+
+                    m_selected.setRadius(1);
+                    m_selected.setOrigin(1, 1);
+                }
+
+                if (isInside(window2World(action.pos()), e))
+                {
+                    e->addComponent<CSelected>();
+                }
+            }                
+        }
+
+
     }
     else if (action.type() == "END")
     {
@@ -391,29 +549,6 @@ void Scene_LevelEditor::sAI()
             }
             destination = getPosition(xRoom, yRoom, e->getComponent<CPatrol>().positions[e->getComponent<CPatrol>().currentPosition].x, e->getComponent<CPatrol>().positions[e->getComponent<CPatrol>().currentPosition].y);
         }
-        // else
-        //{
-        //     speed = e->getComponent<CFollowPlayer>().speed;
-
-        //    //Checks if npc has line of sight to player
-        //    bool los = true;
-        //    for (auto t : m_entityManager.getEntities("tile"))
-        //    {
-        //        if (t->getComponent<CBoundingBox>().blockVision && Physics::EntityIntersect(m_player->getComponent<CTransform>().pos, e->getComponent<CTransform>().pos, t))
-        //        {
-        //            los = false;
-        //        }
-        //    }
-
-        //    if (los) //if enemy has line of sight to player go to player, else go home
-        //    {
-        //        destination = m_player->getComponent<CTransform>().pos;
-        //    }
-        //    else
-        //    {
-        //        destination = e->getComponent<CFollowPlayer>().home;
-        //    }
-        //}
 
         // If not within 10pixels of destination, move towards it
         if (destination.dist(e->getComponent<CTransform>().pos) > 10)
@@ -449,37 +584,17 @@ void Scene_LevelEditor::sStatus()
 
     for (auto e : m_entityManager.getEntities())
     {
-        // Decrement LifeSpan, destroy entity once lifespan is over
-        if (e->hasComponent<CLifeSpan>())
+        if (e->hasComponent<CSelected>())
         {
-            if ((e->getComponent<CLifeSpan>().lifespan) > 0 && e->isActive())
-            {
-                e->getComponent<CLifeSpan>().lifespan -= 1;
-            }
-            else
-            {
-                if (e->tag() == "sword")
-                {
-                    m_player->getComponent<CInput>().attack = false;
-                }
-                e->destroy();
-            }
-        }
-        // Decrement Invincibility, removed after 30 frames
-        if (e->hasComponent<CInvincibility>())
-        {
-            if (e->getComponent<CInvincibility>().iframes > 0)
-            {
-                e->getComponent<CInvincibility>().iframes -= 1;
-            }
-            else
-            {
-                e->removeComponent<CInvincibility>();
-            }
+            Vec2 pos = e->getComponent<CTransform>().pos;
+            m_selected.setPosition(pos.x, pos.y);
+
+            m_selected.setRadius(32);
+            m_selected.setOrigin(32, 32);
         }
     }
 }
-
+    
 void Scene_LevelEditor::sCollision()
 {
     for (auto tile : m_entityManager.getEntities("tile"))
@@ -681,6 +796,7 @@ void Scene_LevelEditor::onEnd()
     // changes music to menu
     // m_game->assets().getSound("MusicPlay").stop();
     // m_game->assets().getSound("MusicTitle").play();
+    saveLevel();
 
     m_hasEnded = true;
     m_game->changeScene("MENU", nullptr, true);
@@ -752,6 +868,9 @@ void Scene_LevelEditor::sRender()
     m_mouseShape.setOrigin(2, 2);
     m_game->window().draw(m_mouseShape);
 
+    m_selected.setFillColor(sf::Color(255, 0, 0));
+    m_game->window().draw(m_selected);
+
     // draw all Entity collision bounding boxes with a rectangleshape
     if (m_drawCollision)
     {
@@ -814,7 +933,65 @@ void Scene_LevelEditor::sRender()
             }
         }
     }
+
+    //Draw UI
+
+
 }
+
+//Saving file
+void Scene_LevelEditor::saveLevel() //const std::string& filename
+{
+    std::ofstream fout;
+    fout.open("test.txt");
+
+    for (auto e : m_entityManager.getEntities("tile"))
+    {
+        fout << "Tile "
+            << e->getComponent<CAnimation>().animation.getName()
+            << "   0  0 "
+            << int(e->getComponent<CTransform>().pos.x / 64)
+            << " "
+            << int(e->getComponent<CTransform>().pos.y / 64)
+            << " "
+            << e->getComponent<CBoundingBox>().blockMove
+            << " "
+            << e->getComponent<CBoundingBox>().blockVision
+            << "\n";
+    }
+
+    for (auto e : m_entityManager.getEntities("npc"))
+    {
+        fout << "NPC "
+            << e->getComponent<CAnimation>().animation.getName()
+            << "   0  0 "
+            << int(e->getComponent<CTransform>().pos.x / 64)
+            << " "
+            << int(e->getComponent<CTransform>().pos.y / 64)
+            << " "
+            << e->getComponent<CBoundingBox>().blockMove
+            << " "
+            << e->getComponent<CBoundingBox>().blockVision
+            << " "
+            << e->getComponent<CHealth>().max
+            << " Follow "
+            << e->getComponent<CPatrol>().speed
+            << "\n";
+
+    }
+
+    for (auto e : m_entityManager.getEntities("playerEditor"))
+    {
+        fout << "Player "
+            << e->getComponent<CTransform>().pos.x << " " << e->getComponent<CTransform>().pos.y << " "
+            << e->getComponent<CBoundingBox>().size.x << " " << e->getComponent<CBoundingBox>().size.y << " "
+            << m_playerConfig.SPEED / 3
+            << e->getComponent<CHealth>().max;
+    }
+
+}
+
+
 
 // Copyright (C) David Churchill - All Rights Reserved
 // COMP4300 - 2022-09 - Assignment 4

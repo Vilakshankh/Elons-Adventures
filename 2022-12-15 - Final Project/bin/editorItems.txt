@@ -1,0 +1,8 @@
+Tile Rock
+NPC Bat
+NPC Worm
+NPC Running
+Tile Black
+NPC Knight
+NPC Tektite
+Tile Heart

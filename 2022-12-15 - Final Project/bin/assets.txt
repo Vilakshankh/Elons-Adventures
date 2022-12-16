@@ -45,6 +45,28 @@ Texture   TexAlienBug	images/EA/alien-bug.png
 Texture   TexAlienHum	images/EA/alien-humanoid.png
 Texture   TexRock	images/EA/rock.png
 Texture   TexStand	images/EA/astro_stand.png
+Texture   TexWalkKnife	images/EA/player/player_walk_knife_spritesheet.png
+Texture   TexIdleKnife	images/EA/player/player_idle_knife_spritesheet.png
+Texture   TexKnifeAttack images/EA/player/player_knife_attack_spritesheet.png
+Texture   TexPlayerDeath images/EA/player/player_death_spritesheet.png
+Texture   TexFinalBoss images/EA/monster-character-sprites/boss/walk_spritesheet.png
+
+
+Texture	TexPlanet1	images/EA/planet_level1.png
+Texture	TexPlanet2	images/EA/planet_level2.png
+Texture	TexPlanet3	images/EA/planet_level3.png
+Texture	TexPlanetEarth	images/EA/planet_earth.png
+Texture	TexGalaxy		images/EA/galaxy_dark.png
+
+
+
+Animation	Planet1	TexPlanet1	50	6
+Animation	Planet2	TexPlanet2	50	6
+Animation	Planet3	TexPlanet3	50	6
+Animation	PlanetEarth	TexPlanetEarth	72	5
+Animation	Galaxy		TexGalaxy	1	0
+
+
 
 Animation Stand		TexStand	1    0
 Animation Rock		TexRock		1    0
@@ -54,6 +76,12 @@ Animation Infared	TexAlienIn	1    0
 Animation Bat		TexAlienBat	1    0
 Animation Bug		TexAlienBug	1    0
 Animation Humanoid	TexAlienHum	1    0
+Animation WalkKnife	TexWalkKnife 6    10
+Animation IdleKnife	TexIdleKnife 8    10
+Animation KnifeAttack	TexKnifeAttack 8    10
+Animation PlayerDeath	TexPlayerDeath 6    10
+Animation Boss	TexFinalBoss 8    10
+
 
 Animation Explosion     TexExplode     48    2 
 Animation RunDown       TexRunDown      2   15   

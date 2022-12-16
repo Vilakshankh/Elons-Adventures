@@ -35,6 +35,11 @@ protected:
     std::shared_ptr<Entity> m_player;
     std::string m_levelPath;
     PlayerConfig m_playerConfig;
+    sf::Shader shaderRed;
+    sf::Shader shaderFade;
+    sf::Shader shaderShake;
+    sf::Shader shaderFrag;
+
     bool m_drawTextures = true;
     bool m_drawCollision = false;
     bool m_follow = false;
@@ -47,7 +52,12 @@ protected:
     void update();
     void spawnPlayer();
     void spawnSword(std::shared_ptr<Entity> entity);
+
+    void spawnMissle(Vec2 position);
+
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
+
+    Vec2 window2World(const Vec2 &windowPos) const;
 
     void sMovement();
     void sAI();

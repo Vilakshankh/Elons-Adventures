@@ -55,12 +55,7 @@ Texture	  TexBarrel	images/EA/Items/objects_outside_0013_Layer-14.png
 Texture   TexBullet 	images/EA/player/bullet.png
 Texture   TexFlame	images/EA/Explosion/flame.png
 
-Texture	TexGalaxyL1	images/EA/parallax/Layer1.png
-Texture	TexGalaxyL2	images/EA/parallax/Layer2.png
-Texture	TexGalaxyL3	images/EA/parallax/Layer3.png
-Texture	TexGalaxyL4	images/EA/parallax/Layer4.png
-Texture	TexGalaxyL5	images/EA/parallax/Layer5.png
-Texture	TexGalaxyOverlay	images/EA/parallax/galaxyOverlay.png
+
 
 
 
@@ -71,7 +66,6 @@ Texture	TexGalaxyL4	images/EA/parallax/Layer4.png
 Texture	TexGalaxyL5	images/EA/parallax/Layer5.png
 Texture	TexGalaxyOverlay	images/EA/parallax/galaxyOverlay.png
 
-Texture	TexGalaxy		images/EA/galaxy_dark.png
 
 
 
@@ -79,16 +73,21 @@ Texture	TexPlanet1	images/EA/planet_level1.png
 Texture	TexPlanet2	images/EA/planet_level2.png
 Texture	TexPlanet3	images/EA/planet_level3.png
 Texture	TexPlanetEarth	images/EA/planet_earth.png
-<<<<<<< HEAD
 
 
-=======
-Texture	TexGalaxy	images/EA/galaxy_dark.png
->>>>>>> main
+
+Texture	TexInvBox	images/EA/UI/inventory/inventory.png
+Texture	TexHealth	images/EA/Items/healthBox.png
+
+
+
 
 Animation 	Flame	TexFlame	6	4
 Animation	Bullet	TexBullet	1	0
 Animation	Barrel	TexBarrel	1	0
+
+
+
 Animation	Planet1	TexPlanet1	50	6
 Animation	Planet2	TexPlanet2	50	6
 Animation	Planet3	TexPlanet3	50	6
@@ -101,6 +100,10 @@ Animation	GalaxyL3	TexGalaxyL3	1	0
 Animation	GalaxyL4	TexGalaxyL4	1	0
 Animation	GalaxyL5	TexGalaxyL5	1	0
 Animation	GalaxyOverlay	TexGalaxyOverlay	1	0
+
+Animation	invBox	TexInvBox	1	0
+Animation 	healthBox	TexHealth	1	0
+
 
 
 

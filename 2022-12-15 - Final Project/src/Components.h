@@ -94,6 +94,8 @@ public:
     bool gravity = false;
     bool flame = false;
 
+    bool showInv = false;
+    bool canShowInv = true;
     Vec2 mousePos = Vec2(0, 0);
 
     CInput() {}

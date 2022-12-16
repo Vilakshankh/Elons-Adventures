@@ -25,6 +25,7 @@
     <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\EntityManager.cpp" />
     <ClCompile Include="..\src\GameEngine.cpp" />
+    <ClCompile Include="..\src\Inventory.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
     <ClCompile Include="..\src\Scene_EA.cpp" />
     <ClCompile Include="..\src\Scene_LevelEditor.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\EntityManager.h" />
     <ClInclude Include="..\src\GameEngine.h" />
+    <ClInclude Include="..\src\Inventory.h" />
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\Scene_EA.h" />
     <ClInclude Include="..\src\Scene_LevelEditor.h" />

@@ -15,11 +15,14 @@ Project Videos:
 Project Setup / Installation:
 
 * Clone Repo
+
 On Windows:
+
 * Open Project solution ("SFMLGame.sln") using Visual Studio.
 * Hit Run
 
 On Linux:
+
 *Open linux terminal to "Final Project folder/bin"
 *type "./Runscript" in the command line and hit enter. (The game should build using the makefile provided)
 

@@ -9,8 +9,8 @@ Project Group Members:
 Project Videos:
 
 * Project Demo: https://youtu.be/596Yf0Tnlqk
-* Project Trailer: https://www.youtube.com/watch?v=9GG_GeHruuQ&ab_channel=KyleShal
-* Project Presentation: https://www.youtube.com/watch?v=BYpd78hyT9w&feature=youtu.be
+* Project Trailer: [https://www.youtube.com/watch?v=9GG_GeHruuQ&ab_channel=KyleShal](https://www.youtube.com/watch?v=9GG_GeHruuQ&ab_channel=KyleShal)
+* Project Presentation: [https://www.youtube.com/watch?v=BYpd78hyT9w&feature=youtu.be](https://www.youtube.com/watch?v=QcBB3FlWZpY&feature=youtu.be)
 
 Project Setup / Installation:
 

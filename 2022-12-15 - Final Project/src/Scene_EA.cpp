@@ -112,20 +112,6 @@ void Scene_EA::loadLevel(const std::string &filename)
             npc->addComponent<CFollowPlayer>(Vec2(nGridX * 64, nGridY * 64), nSpeed);
             npc->addComponent<CShader>("shaderShadow");
         }
-        /*if (label == "Boss")
-        {
-            fin >> nName >> nGridX >> nGridY >> nMove >> nVision >> nHealth >> nDamage >> nSpeed;
-
-            auto boss = m_entityManager.addEntity("boss");
-
-            boss->addComponent<CAnimation>(m_game->assets().getAnimation("Boss"), true);
-            boss->addComponent<CTransform>(Vec2(nGridX * 64, nGridY * 64));
-            boss->addComponent<CBoundingBox>(m_game->assets().getAnimation("Boss").getSize(), true, false);
-            boss->addComponent<CHealth>(nHealth, nHealth);
-            boss->addComponent<CDamage>(nDamage);
-            boss->addComponent<CFollowPlayer>(Vec2(nGridX * 64, nGridY * 64), nSpeed);
-
-        }*/
 
         // load player config
         if (label == "Player")
@@ -157,40 +143,96 @@ void Scene_EA::spawnMissle(Vec2 position)
 {
     auto missle = m_entityManager.addEntity("missle");
     missle->addComponent<CTransform>(position);
-    missle->addComponent<CAnimation>(m_game->assets().getAnimation("SwordUp"), true);
-    missle->addComponent<CBoundingBox>(m_game->assets().getAnimation("SwordUp").getSize());
+    missle->addComponent<CAnimation>(m_game->assets().getAnimation("Barrel"), true);
+    missle->addComponent<CBoundingBox>(m_game->assets().getAnimation("Barrel").getSize());
     missle->addComponent<CDamage>(1);
-    missle->getComponent<CTransform>().velocity = Vec2(0, 10);
+    missle->getComponent<CTransform>().velocity = Vec2(0, 0);
     missle->addComponent<CLifeSpan>(120, m_currentFrame);
+}
+
+void Scene_EA::spawnBullet(std::shared_ptr<Entity> entity)
+{
+    auto weapon = m_entityManager.addEntity("weapon");
+    weapon->addComponent<CAnimation>(m_game->assets().getAnimation("Bullet"), true);
+
+    m_game->assets().getSound("GetItem").play();
+    // determins bullet direction from current direction imput
+
+    float angle = m_player->getComponent<CTransform>().angle + 90;
+    int bulletSpeed = 25;
+    Vec2 velocity = Vec2(cosf((angle)*3.14 / 180) * bulletSpeed, sinf((angle)*3.14 / 180) * bulletSpeed);
+
+    // gives the bullet its components
+    weapon->addComponent<CTransform>(entity->getComponent<CTransform>().pos, velocity, Vec2(1.0f, 1.0f), angle);
+    weapon->addComponent<CBoundingBox>(Vec2(15, 15));
+    weapon->addComponent<CDamage>(1);
+    weapon->addComponent<CLifeSpan>(60, m_currentFrame);
+
+    // shooting is cooldown 1
+    m_player->addComponent<CCooldown>(10, 1);
+}
+
+void Scene_EA::spawnGravityBomb(std::shared_ptr<Entity> entity)
+{
+    // gravity is cooldown 2
+    m_player->addComponent<CCooldown>(120, 2);
+
+    auto bomb = m_entityManager.addEntity("gravity");
+    bomb->addComponent<CAnimation>(m_game->assets().getAnimation("Barrel"), true);
+    bomb->addComponent<CTransform>(entity->getComponent<CTransform>().pos);
+    bomb->addComponent<CLifeSpan>(120, m_currentFrame);
+    bomb->addComponent<CShader>("shaderShadow");
+}
+
+void Scene_EA::spawnFlame(std::shared_ptr<Entity> entity)
+{
+    // ADD CODE AND CONDITION TO USE FULE
+    // FIXd
+    // auto weapon = m_entityManager.addEntity("weapon");
+    // weapon->addComponent<CAnimation>(m_game->assets().getAnimation("Flame"), true);
+
+    //
+    //// determins bullet direction from current direction imput
+
+    // float angle = m_player->getComponent<CTransform>().angle + 90;
+    // int flameSpeed = 1;
+    // Vec2 velocity = Vec2(cosf((angle) * 3.14 / 180) * flameSpeed, sinf((angle) * 3.14 / 180) * flameSpeed);
+
+    //// gives the bullet its components
+    // Vec2 placeing = (entity->getComponent<CTransform>().pos + Vec2(cosf((angle) * 3.14 / 180), (sinf((angle) * 3.14 / 180))));
+    // weapon->addComponent<CTransform>(placeing, velocity, Vec2(1.0f, 1.0f), angle-90);
+    // weapon->addComponent<CBoundingBox>(Vec2(32, 32));
+    // weapon->addComponent<CDamage>(1);
+    // weapon->addComponent<CLifeSpan>(10, m_currentFrame);
+}
+
+void Scene_EA::spawnGravity(std::shared_ptr<Entity> entity)
+{
+    auto gravity = m_entityManager.addEntity("pull");
+    sf::CircleShape circle = sf::CircleShape(128, 30);
+    circle.setFillColor(sf::Color(0, 0, 255, 20));
+    circle.setPosition(entity->getComponent<CTransform>().pos.x - 128, entity->getComponent<CTransform>().pos.y - 128);
+    gravity->addComponent<CGravity>(circle);
+    // gravity->addComponent<CBoundingBox>();
+    // gravity->addComponent<CAnimation>(m_game->assets().getAnimation("Gravity"), true);
+    gravity->addComponent<CTransform>(entity->getComponent<CTransform>().pos);
+    gravity->addComponent<CLifeSpan>(120, m_currentFrame);
 }
 
 void Scene_EA::spawnSword(std::shared_ptr<Entity> entity)
 {
 
     m_game->assets().getSound("Slash").play();
-    auto sword = m_entityManager.addEntity("sword");
-    sword->addComponent<CLifeSpan>(10, m_currentFrame);
-    sword->addComponent<CDamage>(entity->getComponent<CDamage>().damage);
-    sword->addComponent<CBoundingBox>(m_game->assets().getAnimation("SwordRight").getSize());
+    auto weapon = m_entityManager.addEntity("weapon");
+    weapon->addComponent<CLifeSpan>(20, m_currentFrame);
+    weapon->addComponent<CDamage>(entity->getComponent<CDamage>().damage);
+    weapon->addComponent<CBoundingBox>(Vec2(63, 63));
 
     // Checks what direction to spawn the sword in
     CTransform entityTransform = entity->getComponent<CTransform>();
-    if (entityTransform.facing.x == 1.0f)
-    {
-        sword->addComponent<CTransform>(Vec2(entityTransform.pos.x + 64, entityTransform.pos.y));
-    }
-    else if (entityTransform.facing.x == -1.0f)
-    {
-        sword->addComponent<CTransform>(Vec2(entityTransform.pos.x - 64, entityTransform.pos.y));
-    }
-    else if (entityTransform.facing.y == 1.0f)
-    {
-        sword->addComponent<CTransform>(Vec2(entityTransform.pos.x, entityTransform.pos.y - 64));
-    }
-    else
-    {
-        sword->addComponent<CTransform>(Vec2(entityTransform.pos.x, entityTransform.pos.y + 64));
-    }
+    float angle = m_player->getComponent<CTransform>().angle + 90;
+    int range = 32;
+    weapon->addComponent<CTransform>(Vec2(entityTransform.pos.x + (cosf((angle)*3.14 / 180) * range), entityTransform.pos.y + (sinf((angle)*3.14 / 180) * range)));
 }
 
 void Scene_EA::update()
@@ -236,6 +278,8 @@ void Scene_EA::sMovement()
     {
         m_player->getComponent<CTransform>().velocity += Vec2(m_playerConfig.SPEED, 0);
     }
+
+    // code for missle projectile steering
     CTransform playerPos = m_player->getComponent<CTransform>();
     for (auto &e : m_entityManager.getEntities("missle"))
     {
@@ -255,9 +299,36 @@ void Scene_EA::sMovement()
         // 0 < scale < 1
         float scale = 0.02;
         steering *= scale;
-        std::cout << sqrtf(steering.x * steering.x + steering.y * steering.y) << "\n";
 
         e->getComponent<CTransform>().velocity += steering;
+    }
+
+    for (auto e : m_entityManager.getEntities("weapon"))
+    {
+        // Used specific bounding box size to identify melee attack
+        if (e->getComponent<CBoundingBox>().size == Vec2(63, 63))
+        {
+            e->getComponent<CTransform>().pos += playerPos.pos - playerPos.prevPos;
+        }
+        else if (e->getComponent<CAnimation>().animation.getName() == "Flame")
+        {
+            e->getComponent<CTransform>().pos += playerPos.pos - playerPos.prevPos;
+        }
+    }
+
+    for (auto grav : m_entityManager.getEntities("pull"))
+    {
+        for (auto e : m_entityManager.getEntities("npc"))
+        {
+            if (e->getComponent<CTransform>().pos.dist(grav->getComponent<CTransform>().pos) < grav->getComponent<CGravity>().circle.getRadius())
+            {
+                CTransform position = grav->getComponent<CTransform>();
+                Vec2 direction = grav->getComponent<CTransform>().pos - e->getComponent<CTransform>().pos;
+                Vec2 gravity = Vec2((direction.x / position.pos.dist(e->getComponent<CTransform>().pos)),
+                                    (direction.y / position.pos.dist(e->getComponent<CTransform>().pos)));
+                e->getComponent<CTransform>().velocity = gravity;
+            }
+        }
     }
 
     for (auto e : m_entityManager.getEntities())
@@ -302,8 +373,6 @@ void Scene_EA::sDoAction(const Action &action)
         }
         else if (action.name() == "UP")
         {
-            // USED UP FOR ALL DIRECTIONS
-            // FIX
             m_player->getComponent<CInput>().up = true;
             m_player->getComponent<CTransform>().facing = Vec2(0.0, 1.0);
             m_player->getComponent<CState>().state = "run";
@@ -326,19 +395,26 @@ void Scene_EA::sDoAction(const Action &action)
             m_player->getComponent<CTransform>().facing = Vec2(1.0, 0.0);
             m_player->getComponent<CState>().state = "run";
         }
-        else if (action.name() == "ATTACK" && !m_player->getComponent<CInput>().attack)
+        else if (action.name() == "ATTACK")
         {
-            m_player->getComponent<CInput>().attack = true;
-            spawnSword(m_player);
-            m_player->getComponent<CState>().state = "attack";
+            spawnGravityBomb(m_player);
         }
         else if (action.name() == "MOUSE_MOVE")
         {
             m_player->getComponent<CInput>().mousePos = window2World(action.pos());
         }
-        else if (action.name() == "RIGHT_CLICK")
+        else if (action.name() == "LEFT_CLICK" && !m_player->hasComponent<CCooldown>())
         {
-            spawnMissle(window2World(action.pos()));
+            spawnBullet(m_player);
+        }
+        else if (action.name() == "RIGHT_CLICK" && !m_player->getComponent<CInput>().melee)
+        {
+            spawnSword(m_player);
+            m_player->getComponent<CInput>().melee = true;
+        }
+        else if (action.name() == "MIDDLE_CLICK")
+        {
+            spawnFlame(m_player);
         }
     }
     else if (action.type() == "END")
@@ -402,13 +478,24 @@ void Scene_EA::sAI()
             e->getComponent<CTransform>().velocity = Vec2(xVel, yVel);
         }
 
-        if (e->tag() == "boss")
+        Vec2 lookDirection = m_player->getComponent<CTransform>().pos - e->getComponent<CTransform>().pos;
+        if (m_player->getComponent<CTransform>().pos.y < e->getComponent<CTransform>().pos.y)
         {
-            std::cout << "yuh";
+            float facingAngle = -atan(lookDirection.x / lookDirection.y) * 180 / 3.14;
+            e->getComponent<CTransform>().angle = facingAngle + 180;
+        }
+        else
+        {
+            float facingAngle = -atan(lookDirection.x / lookDirection.y) * 180 / 3.14;
+            e->getComponent<CTransform>().angle = facingAngle;
+        }
+
+        if (e->getComponent<CAnimation>().animation.getName() == "Boss")
+        {
             if (!e->hasComponent<CCooldown>())
             {
                 spawnMissle(e->getComponent<CTransform>().pos);
-                e->addComponent<CCooldown>(120);
+                e->addComponent<CCooldown>(120, 1);
             }
         }
     }
@@ -428,9 +515,13 @@ void Scene_EA::sStatus()
             }
             else
             {
-                if (e->tag() == "sword")
+                if (e->tag() == "gravity")
                 {
-                    m_player->getComponent<CInput>().attack = false;
+                    spawnGravity(e);
+                }
+                else
+                {
+                    m_player->getComponent<CInput>().melee = false;
                 }
                 e->destroy();
             }
@@ -447,14 +538,14 @@ void Scene_EA::sStatus()
                 e->removeComponent<CInvincibility>();
             }
         }
-
+        // FIX
         if (e->hasComponent<CCooldown>())
         {
-            if (e->getComponent<CCooldown>().length > 0)
+            if (e->getComponent<CCooldown>().length1 > 0)
             {
-                e->getComponent<CCooldown>().length -= 1;
+                e->getComponent<CCooldown>().length1 -= 1;
             }
-            else
+            else if (e->getComponent<CCooldown>().length1 > 0)
             {
                 e->removeComponent<CCooldown>();
             }
@@ -465,7 +556,6 @@ void Scene_EA::sStatus()
 void Scene_EA::sCollision()
 {
     Vec2 boundCheck = m_player->getComponent<CTransform>().pos;
-    std::cout << boundCheck.x << " " << boundCheck.y << "\n";
     if (boundCheck.x < 0)
     {
         m_player->getComponent<CTransform>().pos.x = 0;
@@ -483,6 +573,18 @@ void Scene_EA::sCollision()
         m_player->getComponent<CTransform>().pos.y = 1536;
     }
 
+    for (auto missle : m_entityManager.getEntities("missle"))
+    {
+        Vec2 overlap = Physics::GetOverlap(missle, m_player);
+        if (overlap.x > 0 && overlap.y > 0)
+        {
+            m_player->getComponent<CHealth>().current -= missle->getComponent<CDamage>().damage;
+            m_player->addComponent<CInvincibility>(30);
+            missle->destroy();
+            m_game->assets().getSound("LinkHurt").play();
+            // play sound
+        }
+    }
     for (auto tile : m_entityManager.getEntities("tile"))
     {
         // All NPC colisions with tiles
@@ -607,17 +709,25 @@ void Scene_EA::sCollision()
         }
 
         // sword collision with npc
-        for (auto &sword : m_entityManager.getEntities("sword"))
+        for (auto &weapon : m_entityManager.getEntities("weapon"))
         {
-            if (sword->hasComponent<CDamage>())
+            if (weapon->hasComponent<CDamage>())
             {
-                Vec2 overlap = Physics::GetOverlap(npc, sword);
+                Vec2 overlap = Physics::GetOverlap(npc, weapon);
                 if (overlap.x > 0 && overlap.y > 0)
                 {
 
-                    npc->getComponent<CHealth>().current -= sword->getComponent<CDamage>().damage;
-                    sword->removeComponent<CDamage>();
-                    sword->removeComponent<CBoundingBox>();
+                    npc->getComponent<CHealth>().current -= weapon->getComponent<CDamage>().damage;
+                    if (weapon->getComponent<CAnimation>().animation.getName() == "Bullet")
+                    {
+                        weapon->destroy();
+                    }
+                    else
+                    {
+                        weapon->removeComponent<CDamage>();
+                        weapon->removeComponent<CBoundingBox>();
+                    }
+
                     m_game->assets().getSound("EnemyHit").play();
 
                     if (npc->getComponent<CHealth>().current <= 0)
@@ -649,11 +759,17 @@ void Scene_EA::sAnimation()
     CInput playerInput = m_player->getComponent<CInput>();
     std::string curAnimation = m_player->getComponent<CAnimation>().animation.getName();
 
-    // Works but player needs to be flipped around
-    // FIX
     bool input = m_player->getComponent<CInput>().up || m_player->getComponent<CInput>().down || m_player->getComponent<CInput>().left || m_player->getComponent<CInput>().right;
 
-    if (m_player->getComponent<CAnimation>().animation.getName() != "WalkKnife" && input)
+    if (m_player->getComponent<CAnimation>().animation.getName() != "BatAttack" && m_player->getComponent<CInput>().melee)
+    {
+        m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("BatAttack");
+    }
+    else if (m_player->getComponent<CAnimation>().animation.getName() == "BatAttack" && m_player->getComponent<CInput>().melee)
+    {
+        // do nothing
+    }
+    else if (m_player->getComponent<CAnimation>().animation.getName() != "WalkKnife" && input)
     {
         m_player->getComponent<CAnimation>().animation = m_game->assets().getAnimation("WalkKnife");
     }
@@ -730,6 +846,11 @@ void Scene_EA::sRender()
             if (e->hasComponent<CInvincibility>())
             {
                 c = sf::Color(255, 255, 255, 128);
+            }
+
+            if (e->hasComponent<CGravity>())
+            {
+                m_game->window().draw(e->getComponent<CGravity>().circle);
             }
 
             if (e->hasComponent<CAnimation>())

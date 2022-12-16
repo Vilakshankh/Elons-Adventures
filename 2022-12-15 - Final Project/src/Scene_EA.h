@@ -53,6 +53,10 @@ protected:
     void spawnSword(std::shared_ptr<Entity> entity);
 
     void spawnMissle(Vec2 position);
+    void spawnBullet(std::shared_ptr<Entity> entity);
+    void spawnGravityBomb(std::shared_ptr<Entity> entity);
+    void spawnGravity(std::shared_ptr<Entity> entity);
+    void spawnFlame(std::shared_ptr<Entity> entity);
 
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
 

@@ -35,10 +35,9 @@ protected:
     std::shared_ptr<Entity> m_player;
     std::string m_levelPath;
     PlayerConfig m_playerConfig;
-    sf::Shader shaderRed;
     sf::Shader shaderFade;
     sf::Shader shaderShake;
-    sf::Shader shaderFrag;
+    sf::Shader shaderShadow;
 
     bool m_drawTextures = true;
     bool m_drawCollision = false;
@@ -54,6 +53,10 @@ protected:
     void spawnSword(std::shared_ptr<Entity> entity);
 
     void spawnMissle(Vec2 position);
+    void spawnBullet(std::shared_ptr<Entity> entity);
+    void spawnGravityBomb(std::shared_ptr<Entity> entity);
+    void spawnGravity(std::shared_ptr<Entity> entity);
+    void spawnFlame(std::shared_ptr<Entity> entity);
 
     Vec2 getPosition(int sx, int sy, int tx, int ty) const;
 
@@ -68,6 +71,9 @@ protected:
 
 public:
     Scene_EA(GameEngine *gameEngine, const std::string &levelPath);
+
+    sf::Texture background;
+    sf::Sprite backgroundSprite;
 
     void sRender();
     void sDoAction(const Action &action);

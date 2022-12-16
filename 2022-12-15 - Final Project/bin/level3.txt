@@ -74,6 +74,5 @@ NPC Boss    23 3 1 1 1 0 1
 NPC Boss    27 4 1 1 1 0 1
 NPC A1    8 13 1 1 1 0 1
 NPC A2    0 6 1 1 1 0 2
-NPC Boss    0 7 1 1 1 0 1
 NPC A1    0 5 1 1 1 0 1
 Player 672 352 48 48 5 1
